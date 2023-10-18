@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			left_layout = new FlowLayoutPanel();
-			functionGraph_PLACEHOLDER = new Panel();
+			functionGraph1 = new FunctionGraph();
 			function_container = new TableLayoutPanel();
 			function_title = new Label();
 			function_entry = new TextBox();
@@ -77,7 +77,7 @@
 			// 
 			// left_layout
 			// 
-			left_layout.Controls.Add(functionGraph_PLACEHOLDER);
+			left_layout.Controls.Add(functionGraph1);
 			left_layout.Dock = DockStyle.Fill;
 			left_layout.FlowDirection = FlowDirection.TopDown;
 			left_layout.Location = new Point(10, 10);
@@ -86,13 +86,23 @@
 			left_layout.Size = new Size(259, 238);
 			left_layout.TabIndex = 0;
 			// 
-			// functionGraph_PLACEHOLDER
+			// functionGraph1
 			// 
-			functionGraph_PLACEHOLDER.BackColor = SystemColors.ControlDark;
-			functionGraph_PLACEHOLDER.Location = new Point(3, 3);
-			functionGraph_PLACEHOLDER.Name = "functionGraph_PLACEHOLDER";
-			functionGraph_PLACEHOLDER.Size = new Size(200, 200);
-			functionGraph_PLACEHOLDER.TabIndex = 0;
+			functionGraph1.AxisColor = Color.Black;
+			functionGraph1.AxisFontSize = 5;
+			functionGraph1.BackgroundColor = Color.White;
+			functionGraph1.DeltaX = 0.2F;
+			functionGraph1.DrawAxes = true;
+			functionGraph1.EndX = 9F;
+			functionGraph1.EquationString = "-0.4*x^2+2*x+10";
+			functionGraph1.GraphColor = Color.Red;
+			functionGraph1.LabelDensity = 10;
+			functionGraph1.Location = new Point(3, 3);
+			functionGraph1.Name = "functionGraph1";
+			functionGraph1.Size = new Size(200, 200);
+			functionGraph1.StartX = -10F;
+			functionGraph1.TabIndex = 0;
+			functionGraph1.YOffset = 10F;
 			// 
 			// function_container
 			// 
@@ -533,7 +543,6 @@
 
 		#endregion
 		private FlowLayoutPanel left_layout;
-		private Panel functionGraph_PLACEHOLDER;
 		private TableLayoutPanel function_container;
 		private Label function_title;
 		private TextBox function_entry;
@@ -568,5 +577,6 @@
 		private Button functionOk_button;
 		private Label pkPercent_label;
 		private Label pmPercent_label;
+		private FunctionGraph functionGraph1;
 	}
 }

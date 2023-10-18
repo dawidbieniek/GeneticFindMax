@@ -1,0 +1,232 @@
+﻿using System.ComponentModel;
+using System.Text.RegularExpressions;
+
+using NCalc;
+
+namespace AE1;
+
+internal partial class FunctionGraph : Panel
+{
+	private Bitmap? _bitmap;
+	private string _equationString = string.Empty;
+	private Expression? _expression;
+	private float _startX = -10;
+	private float _endX = 10;
+
+	public FunctionGraph()
+	{
+	}
+
+	[Category("Behavior")]
+	[Description("Mathematical equation for graph to draw")]
+	public string EquationString
+	{
+		get => _equationString;
+		set
+		{
+			if (_equationString != value)
+			{
+				_equationString = value;
+				_expression = new(PreprocessEquation(value));
+				Invalidate();
+			}
+		}
+	}
+
+	[Category("Appearance")]
+	[Description("Color of axes")]
+	public Color AxisColor { get; set; } = Color.Black;
+	[Category("Appearance")]
+	[Description("Color of graph")]
+	public Color GraphColor { get; set; } = Color.Red;
+	[Category("Appearance")]
+	[Description("Color of background")]
+	public Color BackgroundColor { get; set; } = Color.White;
+	[Category("Appearance")]
+	[Description("Font size of axis labels")]
+	public int AxisFontSize { get; set; } = 5;
+	[Category("Appearance")]
+	[Description("Should axes be drawn")]
+	public bool DrawAxes { get; set; } = true;
+	[Category("Appearance")]
+	[Description("Should graph be drawn")]
+	public float DeltaX { get; set; } = 0.2f;
+	public float StartX
+	{
+		get => _startX;
+		set
+		{
+			if (_startX != value)
+			{
+				_startX = value;
+				Invalidate();
+			}
+		}
+	}
+	public float EndX
+	{
+		get => _endX;
+		set
+		{
+			if (_endX != value)
+			{
+				_endX = value;
+				Invalidate();
+			}
+		}
+	}
+	public int LabelDensity { get; set; } = 10;
+
+	public float YOffset { get; set; } = 0;
+
+	protected override void OnPaint(PaintEventArgs e)
+	{
+		base.OnPaint(e);
+
+		GenerateGraph(string.IsNullOrEmpty(EquationString));
+
+		if (_bitmap is not null)
+			e.Graphics.DrawImage(_bitmap, Point.Empty);
+		else
+		{
+			Bitmap bmp = new Bitmap(Width, Height);
+			using (Graphics graphics = Graphics.FromImage(bmp))
+			{
+				// Fill the entire bitmap with gray
+				using Brush brush = new SolidBrush(Color.Gray);
+				graphics.FillRectangle(brush, 0, 0, bmp.Width, bmp.Height);
+			}
+			e.Graphics.DrawImage(bmp, Point.Empty);
+		}
+	}
+
+	[GeneratedRegex(@"x\^(\d+)")]
+	private static partial Regex PowRegex();
+	//x^2
+	private string PreprocessEquation(string equation)
+	{
+		// Replace '^' with 'Pow'
+		equation = PowRegex().Replace(equation, match => $"Pow(x, {match.Groups[1].Value})");
+		// Replace 'x' with '[x]' (needed for substitution of parameter)
+		return equation.Replace("X", "x").Replace("x", "[x]");
+	}
+
+	private void GenerateGraph(bool empty = false)
+	{
+		_bitmap = new(Width, Height);
+
+		Graphics g = Graphics.FromImage(_bitmap);
+		SolidBrush backgroundBrush = new(BackgroundColor);
+
+		// Clear background
+		g.FillRectangle(backgroundBrush, 0, 0, Width, Height);
+
+		if (!empty)
+		{
+			int pointCount = (int)MathF.Ceiling((EndX - StartX) / DeltaX) + 1;
+
+			// Calculate all graph values
+			float[] values = new float[pointCount];
+
+			for (int i = 0; i < pointCount - 1; i++)
+			{
+				float x = (i * DeltaX) + StartX;
+				_expression!.Parameters["x"] = x;
+				values[i] = Convert.ToSingle(_expression.Evaluate());
+			}
+
+			_expression!.Parameters["x"] = EndX;
+			values[^1] = Convert.ToSingle(_expression.Evaluate());
+
+			// Draw graph
+			DrawGraph(g, values, pointCount);
+
+			// Draw axes
+			if (DrawAxes)
+			{
+				DrawAxesOnGraph(g, values);
+			}
+		}
+	}
+
+	private void DrawGraph(Graphics g, float[] values, int pointCount)
+	{
+		Pen graphPen = new(GraphColor);
+
+		float minVal = (float)values.Min();
+		float maxVal = (float)values.Max();
+
+		float xPixelDelta = Math.Max((float)Width / pointCount, 1);
+		float yPixelDelta = Math.Max((float)(Height - YOffset) / (maxVal - minVal), 1);
+
+		float prevX = 0;
+		float prevY = -((values[0] - minVal) * yPixelDelta) + Height - YOffset;
+
+		for (int i = 1; i < pointCount; i++)
+		{
+			float xImage = i * xPixelDelta;
+			float yImage = -((values[i] - minVal) * yPixelDelta) + Height - YOffset;
+
+			g.DrawLine(graphPen, prevX, prevY, xImage, yImage);
+
+			prevX = xImage;
+			prevY = yImage;
+		}
+	}
+
+	private void DrawAxesOnGraph(Graphics g, float[] values)
+	{
+		Pen axisPen = new(AxisColor);
+
+		float minY = (float)values.Min();
+		float maxY = (float)values.Max();
+
+		float yAxisPos;
+		float xAxisPos;
+
+		float xPixelDelta = Width / (EndX - StartX);
+		float yPixelDelta = (Height - YOffset) / (maxY - minY);
+
+		// Horizontal line
+		if (maxY < 0)       // Top line
+			yAxisPos = 1;
+		else if (minY > 0)  // Bottom line
+			yAxisPos = Height - YOffset;
+		else                // Middle line
+			yAxisPos = maxY * yPixelDelta;
+
+		g.DrawLine(axisPen, 0, yAxisPos, Width, yAxisPos);
+
+		// Vertical line
+		if (StartX > 0)     // Left line
+			xAxisPos = 1;
+		else if (EndX < 0)  // Right line
+			xAxisPos = Width - 1;
+		else                // Middle line
+			xAxisPos = -StartX * xPixelDelta;
+
+		g.DrawLine(axisPen, xAxisPos, 0, xAxisPos, Height);
+
+		DrawLabels(g, axisPen, minY, maxY, yAxisPos, xAxisPos);
+	}
+
+	private void DrawLabels(Graphics g, Pen axisPen, float minY, float maxY, float yAxisPos, float xAxisPos)
+	{
+		SolidBrush axisBrush = new(AxisColor);
+		Font axisFont = new(FontFamily.GenericSansSerif, AxisFontSize);
+
+		float xLabelDelta = (EndX - StartX) / LabelDensity;
+		float yLabelDelta = (maxY - minY) / LabelDensity;
+		float xLabelPixelDelta = Width / LabelDensity;
+		float yLabelPixelDelta = Height / LabelDensity;
+
+		for (int i = 0; i < LabelDensity; i++)
+		{
+			g.DrawLine(axisPen, i * xLabelPixelDelta, yAxisPos - 2, i * xLabelPixelDelta, yAxisPos + 2);
+			g.DrawString(MathF.Round((i * xLabelDelta) + StartX, 1).ToString(), axisFont, axisBrush, i * xLabelPixelDelta, yAxisPos - 7);
+
+			g.DrawLine(axisPen, xAxisPos - 2, i * yLabelPixelDelta, xAxisPos + 2, i * yLabelPixelDelta);
+			g.DrawString(MathF.Round(maxY - (i * yLabelDelta), 1).ToString(), axisFont, axisBrush, xAxisPos + 5, i * xLabelPixelDelta);
+		}
+	}
+}
