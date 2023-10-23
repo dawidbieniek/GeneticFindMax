@@ -12,12 +12,13 @@ internal class GeneticAlgorithm
 	private readonly float _crossingProbability;
 	private readonly float _mutationProbability;
 	private readonly int _chromosomeLength;
-
 	private readonly Expression _valueFunction;
 	private int[] _population;
 
 	private readonly int _minX;
 	private readonly int _maxX;
+
+	private readonly int _maxValue;
 
 	public GeneticAlgorithm(float crossingProbability, float mutationProbability, int populationSize, string valueFunctionString, int minX, int maxX, float minY)
 	{
@@ -34,6 +35,8 @@ internal class GeneticAlgorithm
 		// Population initialized with random values
 		int maxValue = 1 << _chromosomeLength;
 		_population = Enumerable.Repeat(0, populationSize).Select(i => Rnd.Next(maxValue)).ToArray();
+
+		_maxValue = (int)Math.Pow(2, _chromosomeLength) - 1;
 	}
 
 	public StatisticalValues CurrentStatisticalValues
@@ -43,7 +46,7 @@ internal class GeneticAlgorithm
 			IEnumerable<float> values = _population.Select(
 			v =>
 			{
-				_valueFunction!.Parameters["x"] = Decode(v);
+				_valueFunction.Parameters["x"] = Decode(v);
 				return Convert.ToSingle(_valueFunction.Evaluate());
 			}).ToArray();
 
@@ -63,7 +66,11 @@ internal class GeneticAlgorithm
 	/// Calculates fitness of each member of population
 	/// </summary>
 	/// <returns> <see cref="IEnumerable{T}"/> of fitness values </returns>
-	private IEnumerable<float> EvaluateFitness() => _population.Select(i => { _valueFunction.Parameters["x"] = Decode(i); return Convert.ToSingle(_valueFunction.Evaluate()); });
+	private IEnumerable<float> EvaluateFitness() => _population.Select(i => 
+	{ 
+		_valueFunction.Parameters["x"] = Decode(i); 
+		return Convert.ToSingle(_valueFunction.Evaluate()); 
+	});
 
 	/// <summary>
 	/// Performs selection of members from population based on roulette wheel
@@ -123,17 +130,25 @@ internal class GeneticAlgorithm
 
 		for (int i = 0; i < crossed.Length - 1; i += 2)
 		{
-			int crossoverPoint = Rnd.Next(1, _chromosomeLength - 1);
+			if (Rnd.NextSingle() < _crossingProbability)
+			{
+				int crossoverPoint = Rnd.Next(1, _chromosomeLength - 1);
 
-			int rightMask = (1 << crossoverPoint) - 1;
-			int leftMask = ~rightMask;
+				int rightMask = (1 << crossoverPoint) - 1;
+				int leftMask = ~rightMask;
 
-			// Create offspring by combining parent genes
-			crossed[i] = (selected[i] & rightMask) | (selected[i + 1] & leftMask);
-			crossed[i + 1] = (selected[i] & leftMask) | (selected[i + 1] & rightMask);
+				// Create offspring by combining parent genes
+				crossed[i] = (selected[i] & rightMask) | (selected[i + 1] & leftMask);
+				crossed[i + 1] = (selected[i] & leftMask) | (selected[i + 1] & rightMask);
+			}
+			else
+			{
+				crossed[i] = selected[i];
+				crossed[i + 1] = selected[i + 1];
+			}
 		}
 
-		return crossed;
+			return crossed;
 	}
 
 	/// <summary>
@@ -159,20 +174,14 @@ internal class GeneticAlgorithm
 	}
 
 	/// <summary>
-	/// Converts value from range (minX, maxX) to range (0, 2^_chromosomeLength)
+	/// Converts value from range (_minX, _maxX) to range (0, Pow(2, _chromosomeLength))
 	/// </summary>
-	private int Code(int value)
-	{
-		return (int)MathF.Round((_chromosomeLength - 1) * (value - _minX) / (_maxX - _minX));
-	}
+	private int Code(int value) => (int)MathF.Round(((float)(value - _minX) * _maxValue / (_maxX - _minX)));
 
 	/// <summary>
-	/// Converts value from range (0, 2^_chromosomeLength) to range (minX, maxX)
+	/// Converts value from range (0, Pow(2, _chromosomeLength)) to range (_minX, _maxX)
 	/// </summary>
-	private int Decode(int code)
-	{
-		return (int)(_minX + MathF.Round(code - ((_maxX - _minX) / (_chromosomeLength - 1))));
-	}
+	private int Decode(int code) => (int)MathF.Round(((float)code * (_maxX - _minX) / _maxValue) + _minX);
 
 	internal record StatisticalValues(float Min, float Max, float Avg)
 	{
