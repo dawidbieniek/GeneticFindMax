@@ -15,10 +15,33 @@ public partial class MainForm : Form
 	private Thread? _gaThread;
 	private ManualResetEvent? _gaResetEvent;
 
+	private readonly string _defaultFunction = "-0.4*x^2+2*x+10";
+	private readonly int _defaultStartX = -1;
+	private readonly int _defaultEndX = 26;
+	private readonly float _defaultPk = 100;
+	private readonly float _defaultPm = 1;
+	private readonly int _defaultPopulation = 100;
+
 	public MainForm()
 	{
 		CultureInfo.CurrentCulture = DotForDecimalSeparatorCulture;
 		InitializeComponent();
+
+		SetDefaultValues();
+	}
+
+	private void SetDefaultValues()
+	{
+		function_entry.Text = _defaultFunction;
+		functionGraph1_graph.EquationString = _defaultFunction;
+		xFrom_entry.Text = _defaultStartX.ToString();
+		functionGraph1_graph.StartX = _defaultStartX;
+		xTo_entry.Text = _defaultEndX.ToString();
+		functionGraph1_graph.EndX = _defaultEndX;
+
+		crossProb_entry.Text = _defaultPk.ToString();
+		mutProb_entry.Text = _defaultPm.ToString();
+		population_entry.Text = _defaultPopulation.ToString();
 	}
 
 	private bool WrongFunction
@@ -62,92 +85,92 @@ public partial class MainForm : Form
 
 	private void function_entry_TextChanged(object sender, EventArgs e)
 	{
-		if (!MyRegexes.MathFunctionRegex().IsMatch(function_entry.Text))
-		{
-			function_entry.ForeColor = Color.Red;
-			WrongFunction = true;
-		}
-		else
+		if (MyRegexes.MathFunctionRegex().IsMatch(function_entry.Text))
 		{
 			function_entry.ForeColor = SystemColors.WindowText;
 			WrongFunction = false;
+		}
+		else
+		{
+			function_entry.ForeColor = Color.Red;
+			WrongFunction = true;
 		}
 	}
 
 	private void functionOk_button_Click(object sender, EventArgs e)
 	{
 		functionGraph1_graph.EquationString = function_entry.Text;  // TODO: Rename graph
+		functionGraph1_graph.StartX = Convert.ToInt32(xFrom_entry.Text);
+		functionGraph1_graph.EndX = Convert.ToInt32(xTo_entry.Text);
 	}
 
 	private void xFrom_entry_TextChanged(object sender, EventArgs e)
 	{
-		if (!MyRegexes.IntNumberRegex().IsMatch(xFrom_entry.Text))
-		{
-			xFrom_entry.ForeColor = Color.Red;
-			WrongFunction = true;
-		}
-		else
+		if (MyRegexes.IntNumberRegex().IsMatch(xFrom_entry.Text))
 		{
 			xFrom_entry.ForeColor = SystemColors.WindowText;
 			WrongFunction = false;
-			functionGraph1_graph.StartX = Convert.ToInt32(xFrom_entry.Text);
+		}
+		else
+		{
+			xFrom_entry.ForeColor = Color.Red;
+			WrongFunction = true;
 		}
 	}
 
 	private void xTo_entry_TextChanged(object sender, EventArgs e)
 	{
-		if (!MyRegexes.IntNumberRegex().IsMatch(xTo_entry.Text))
-		{
-			xTo_entry.ForeColor = Color.Red;
-			WrongFunction = true;
-		}
-		else
+		if (MyRegexes.IntNumberRegex().IsMatch(xTo_entry.Text))
 		{
 			xTo_entry.ForeColor = SystemColors.WindowText;
 			WrongFunction = false;
-			functionGraph1_graph.EndX = Convert.ToInt32(xTo_entry.Text);
+		}
+		else
+		{
+			xTo_entry.ForeColor = Color.Red;
+			WrongFunction = true;
 		}
 	}
 
 	private void crossProb_entry_TextChanged(object sender, EventArgs e)
 	{
-		if (!MyRegexes.PositiveFloatNumberRegex().IsMatch(crossProb_entry.Text) || Convert.ToSingle(crossProb_entry.Text) > 100f)
+		if (MyRegexes.PositiveFloatNumberRegex().IsMatch(crossProb_entry.Text) && Convert.ToSingle(crossProb_entry.Text) <= 100f)
 		{
-			crossProb_entry.ForeColor = Color.Red;
+			crossProb_entry.ForeColor = SystemColors.WindowText;
 			WrongParameters = true;
 		}
 		else
 		{
-			crossProb_entry.ForeColor = SystemColors.WindowText;
-			WrongParameters = false;
+			crossProb_entry.ForeColor = Color.Red;
+			WrongParameters = true;
 		}
 	}
 
 	private void mutProb_entry_TextChanged(object sender, EventArgs e)
 	{
-		if (!MyRegexes.PositiveFloatNumberRegex().IsMatch(mutProb_entry.Text) || Convert.ToSingle(mutProb_entry.Text) > 100f)
+		if (MyRegexes.PositiveFloatNumberRegex().IsMatch(mutProb_entry.Text) && Convert.ToSingle(mutProb_entry.Text) <= 100f)
 		{
-			mutProb_entry.ForeColor = Color.Red;
+			mutProb_entry.ForeColor = SystemColors.WindowText;
 			WrongParameters = true;
 		}
 		else
 		{
-			mutProb_entry.ForeColor = SystemColors.WindowText;
-			WrongParameters = false;
+			mutProb_entry.ForeColor = Color.Red;
+			WrongParameters = true;
 		}
 	}
 
 	private void population_entry_TextChanged(object sender, EventArgs e)
 	{
-		if (!MyRegexes.PositiveIntNumberRegex().IsMatch(population_entry.Text))
+		if (MyRegexes.PositiveIntNumberRegex().IsMatch(population_entry.Text))
 		{
-			population_entry.ForeColor = Color.Red;
+			population_entry.ForeColor = SystemColors.WindowText;
 			WrongParameters = true;
 		}
 		else
 		{
-			population_entry.ForeColor = SystemColors.WindowText;
-			WrongParameters = false;
+			population_entry.ForeColor = Color.Red;
+			WrongParameters = true;
 		}
 	}
 
@@ -210,5 +233,65 @@ public partial class MainForm : Form
 
 	private void reset_button_Click(object sender, EventArgs e)
 	{
+	}
+
+	private void function_entry_Leave(object sender, EventArgs e)
+	{
+		if(string.IsNullOrEmpty(function_entry.Text))
+		{
+			function_entry.Text = _defaultFunction;
+			function_entry.ForeColor = SystemColors.WindowText;
+			WrongFunction = false;
+		}
+	}
+
+	private void xFrom_entry_Leave(object sender, EventArgs e)
+	{
+		if (string.IsNullOrEmpty(xFrom_entry.Text))
+		{
+			xFrom_entry.Text = _defaultStartX.ToString();
+			xFrom_entry.ForeColor = SystemColors.WindowText;
+			WrongFunction = false;
+		}
+	}
+
+	private void xTo_entry_Leave(object sender, EventArgs e)
+	{
+		if (string.IsNullOrEmpty(xTo_entry.Text))
+		{
+			xTo_entry.Text = _defaultEndX.ToString();
+			xTo_entry.ForeColor = SystemColors.WindowText;
+			WrongFunction = false;
+		}
+	}
+
+	private void crossProb_entry_Leave(object sender, EventArgs e)
+	{
+		if (string.IsNullOrEmpty(crossProb_entry.Text))
+		{
+			crossProb_entry.Text = _defaultPk.ToString();
+			crossProb_entry.ForeColor = SystemColors.WindowText;
+			WrongParameters = false;
+		}
+	}
+
+	private void mutProb_entry_Leave(object sender, EventArgs e)
+	{
+		if (string.IsNullOrEmpty(mutProb_entry.Text))
+		{
+			mutProb_entry.Text = _defaultPm.ToString();
+			mutProb_entry.ForeColor = SystemColors.WindowText;
+			WrongParameters = false;
+		}
+	}
+
+	private void population_entry_Leave(object sender, EventArgs e)
+	{
+		if (string.IsNullOrEmpty(population_entry.Text))
+		{
+			population_entry.Text = _defaultPopulation.ToString();
+			population_entry.ForeColor = SystemColors.WindowText;
+			WrongParameters = false;
+		}
 	}
 }

@@ -141,6 +141,7 @@
 			function_entry.Size = new Size(200, 23);
 			function_entry.TabIndex = 1;
 			function_entry.TextChanged += function_entry_TextChanged;
+			function_entry.Leave += function_entry_Leave;
 			// 
 			// functionOk_button
 			// 
@@ -206,6 +207,7 @@
 			xTo_entry.Size = new Size(75, 23);
 			xTo_entry.TabIndex = 3;
 			xTo_entry.TextChanged += xTo_entry_TextChanged;
+			xTo_entry.Leave += xTo_entry_Leave;
 			// 
 			// xFrom_entry
 			// 
@@ -216,6 +218,7 @@
 			xFrom_entry.Size = new Size(75, 23);
 			xFrom_entry.TabIndex = 4;
 			xFrom_entry.TextChanged += xFrom_entry_TextChanged;
+			xFrom_entry.Leave += xFrom_entry_Leave;
 			// 
 			// xFrom_label
 			// 
@@ -470,6 +473,7 @@
 			population_entry.Size = new Size(100, 23);
 			population_entry.TabIndex = 5;
 			population_entry.TextChanged += population_entry_TextChanged;
+			population_entry.Leave += population_entry_Leave;
 			// 
 			// mutProb_title
 			// 
@@ -491,6 +495,7 @@
 			mutProb_entry.Size = new Size(100, 23);
 			mutProb_entry.TabIndex = 3;
 			mutProb_entry.TextChanged += mutProb_entry_TextChanged;
+			mutProb_entry.Leave += mutProb_entry_Leave;
 			// 
 			// crossProb_title
 			// 
@@ -512,6 +517,7 @@
 			crossProb_entry.Size = new Size(100, 23);
 			crossProb_entry.TabIndex = 1;
 			crossProb_entry.TextChanged += crossProb_entry_TextChanged;
+			crossProb_entry.Leave += crossProb_entry_Leave;
 			// 
 			// pkPercent_label
 			// 
