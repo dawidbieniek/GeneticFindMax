@@ -1,6 +1,4 @@
-﻿using System.Security.Policy;
-
-using NCalc;
+﻿using NCalc;
 
 namespace AE1;
 
@@ -15,7 +13,7 @@ internal class GeneticAlgorithm
 	private readonly Expression _valueFunction;
 	private readonly int _minX;
 	private readonly int _maxX;
-	private readonly int _maxValue;
+	private readonly int _maxChromosomeValue;
 	private int[] _population;
 
 	public GeneticAlgorithm(float crossingProbability, float mutationProbability, int populationSize, string valueFunctionString, int minX, int maxX)
@@ -30,12 +28,13 @@ internal class GeneticAlgorithm
 		_chromosomeLength = (int)Math.Ceiling(Math.Log(maxX - minX, 2));
 		// Value function is math function offset by smallest value
 		float minY = FindFunctionMin(valueFunctionString, 0.2f);    // TODO: To chyba nie najlepszy sposób
-		_valueFunction = new(NCalcHelpers.PreprocessEquation(valueFunctionString + $"+{minY}"));
+		string offset = (minY < 0 ? "" : "+") + minY.ToString();
+		_valueFunction = new(NCalcHelpers.PreprocessEquation(valueFunctionString + offset));
 		// Population initialized with random values
 		int maxValue = 1 << _chromosomeLength;
 		_population = Enumerable.Repeat(0, populationSize).Select(i => Rnd.Next(maxValue)).ToArray();
 
-		_maxValue = (int)Math.Pow(2, _chromosomeLength) - 1;
+		_maxChromosomeValue = (int)Math.Pow(2, _chromosomeLength) - 1;
 	}
 
 	public StatisticalValues CurrentStatisticalValues
@@ -63,11 +62,17 @@ internal class GeneticAlgorithm
 
 	private float FindFunctionMin(string function, float deltaX)
 	{
+		int pointCount = (int)MathF.Ceiling((_maxX - _minX) / deltaX) + 1;
+
 		float min = float.MaxValue;
+
 		Expression expr = new(NCalcHelpers.PreprocessEquation(function));
-		for (float x = _minX; x <= _maxX; x += deltaX)
+
+		for (int i = 0; i < pointCount - 1; i++)
 		{
+			float x = (i * deltaX) + _minX;
 			expr.Parameters["x"] = x;
+
 			float value = Convert.ToSingle(expr.Evaluate());
 			if (value < min)
 				min = value;
@@ -190,12 +195,12 @@ internal class GeneticAlgorithm
 	/// <summary>
 	/// Converts value from range (_minX, _maxX) to range (0, Pow(2, _chromosomeLength))
 	/// </summary>
-	private int Code(int value) => (int)MathF.Round(((float)(value - _minX) * _maxValue / (_maxX - _minX)));
+	private int Code(int value) => (int)MathF.Round(((float)(value - _minX) * _maxChromosomeValue / (_maxX - _minX)));
 
 	/// <summary>
 	/// Converts value from range (0, Pow(2, _chromosomeLength)) to range (_minX, _maxX)
 	/// </summary>
-	private int Decode(int code) => (int)MathF.Round(((float)code * (_maxX - _minX) / _maxValue) + _minX);
+	private int Decode(int code) => (int)MathF.Round(((float)code * (_maxX - _minX) / _maxChromosomeValue) + _minX);
 
 	internal record StatisticalValues(float Min, float Max, float Avg)
 	{

@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Runtime.CompilerServices;
 
 namespace AE1;
 
@@ -11,15 +10,14 @@ public partial class MainForm : Form
 
 	private bool _wrongFunction;
 	private bool _wrongParameters;
-
-	private float _minY;
+	private bool _isThreadPaused;
 
 	private Thread? _gaThread;
 	private ManualResetEvent? _gaResetEvent;
-	private bool _isThreadPaused;
 
 	public MainForm()
 	{
+		CultureInfo.CurrentCulture = DotForDecimalSeparatorCulture;
 		InitializeComponent();
 	}
 
@@ -44,6 +42,19 @@ public partial class MainForm : Form
 		}
 	}
 
+	private bool IsThreadPaused
+	{
+		get => _isThreadPaused;
+		set
+		{
+			_isThreadPaused = value;
+			if (!value)
+			{
+				start_button.Text = "Pause";
+			}
+		}
+	}
+
 	private void UpdateStartButtonEnabledState()
 	{
 		start_button.Enabled = !(WrongFunction || WrongParameters);
@@ -65,7 +76,7 @@ public partial class MainForm : Form
 
 	private void functionOk_button_Click(object sender, EventArgs e)
 	{
-		functionGraph1_graph.EquationString = function_entry.Text;	// TODO: Rename graph
+		functionGraph1_graph.EquationString = function_entry.Text;  // TODO: Rename graph
 	}
 
 	private void xFrom_entry_TextChanged(object sender, EventArgs e)
@@ -100,7 +111,7 @@ public partial class MainForm : Form
 
 	private void crossProb_entry_TextChanged(object sender, EventArgs e)
 	{
-		if (!MyRegexes.PositiveFloatNumberRegex().IsMatch(crossProb_entry.Text) || Convert.ToSingle(crossProb_entry.Text, DotForDecimalSeparatorCulture) > 100f)
+		if (!MyRegexes.PositiveFloatNumberRegex().IsMatch(crossProb_entry.Text) || Convert.ToSingle(crossProb_entry.Text) > 100f)
 		{
 			crossProb_entry.ForeColor = Color.Red;
 			WrongParameters = true;
@@ -114,7 +125,7 @@ public partial class MainForm : Form
 
 	private void mutProb_entry_TextChanged(object sender, EventArgs e)
 	{
-		if (!MyRegexes.PositiveFloatNumberRegex().IsMatch(mutProb_entry.Text) || Convert.ToSingle(mutProb_entry.Text, DotForDecimalSeparatorCulture) > 100f)
+		if (!MyRegexes.PositiveFloatNumberRegex().IsMatch(mutProb_entry.Text) || Convert.ToSingle(mutProb_entry.Text) > 100f)
 		{
 			mutProb_entry.ForeColor = Color.Red;
 			WrongParameters = true;
@@ -144,48 +155,60 @@ public partial class MainForm : Form
 	{
 		if (_gaThread is null)
 		{
-			GeneticAlgorithm ga = new(
-				Convert.ToSingle(crossProb_entry.Text, DotForDecimalSeparatorCulture),
-				Convert.ToSingle(mutProb_entry.Text, DotForDecimalSeparatorCulture),
+			GeneticAlgorithm ga = new(Convert.ToSingle(crossProb_entry.Text),
+				Convert.ToSingle(mutProb_entry.Text),
 				Convert.ToInt32(population_entry.Text),
 				function_entry.Text,
 				Convert.ToInt32(xFrom_entry.Text),
 				Convert.ToInt32(xTo_entry.Text));
 
-			_gaResetEvent = new(false);
-			_gaThread = new(() =>
-			{
-				for (int i = 0; i < 100000; i++)
-				{
-					_gaResetEvent.WaitOne();
-					ga.Step();
+			_gaResetEvent = new(true);
+			IsThreadPaused = false;
 
-					var stats = ga.CurrentStatisticalValues;
+			_gaThread = new(new ThreadStart(delegate { PerformGeneticAlgorithm(ga); }));
 
-					iteration_displayLabel.Text = i.ToString();
-					min_displayLabel.Text = stats.Min.ToString();
-					avg_displayLabel.Text = stats.Avg.ToString();
-					max_displayLabel.Text = stats.Max.ToString();
-					Thread.Sleep(1000);
-
-				}
-			});
-
-			_isThreadPaused = false;
 			_gaThread.Start();
 		}
 		else
 		{
-			if (_isThreadPaused)
+			if (IsThreadPaused)
 			{
-				_gaResetEvent!.Reset();
-				_isThreadPaused = false;
+				_gaResetEvent!.Set();
+				IsThreadPaused = false;
 			}
 			else
 			{
-				_gaResetEvent!.Set();
-				_isThreadPaused = true;
+				_gaResetEvent!.Reset();
+				IsThreadPaused = true;
 			}
 		}
+	}
+
+	/// <summary>
+	/// Thread method. Should be only used inside another thread
+	/// </summary>
+	private void PerformGeneticAlgorithm(GeneticAlgorithm ga)
+	{
+		for (int i = 0; i < 100000; i++)
+		{
+			_gaResetEvent!.WaitOne();
+			ga.Step();
+
+			GeneticAlgorithm.StatisticalValues stats = ga.CurrentStatisticalValues;
+
+			Invoke((MethodInvoker)delegate
+		{
+			iteration_displayLabel.Text = i.ToString();
+			min_displayLabel.Text = stats.Min.ToString("n2");
+			avg_displayLabel.Text = stats.Avg.ToString("n2");
+			max_displayLabel.Text = stats.Max.ToString("n2");
+		});
+
+			//Thread.Sleep(500);
+		}
+	}
+
+	private void reset_button_Click(object sender, EventArgs e)
+	{
 	}
 }

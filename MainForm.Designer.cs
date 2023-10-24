@@ -45,6 +45,7 @@
 			mainDivide_layout = new TableLayoutPanel();
 			right_layout = new FlowLayoutPanel();
 			start_button = new Button();
+			reset_button = new Button();
 			algStats_container = new TableLayoutPanel();
 			iteration_displayLabel = new Label();
 			iteration_title = new Label();
@@ -271,6 +272,7 @@
 			// right_layout
 			// 
 			right_layout.Controls.Add(start_button);
+			right_layout.Controls.Add(reset_button);
 			right_layout.Controls.Add(algStats_container);
 			right_layout.Dock = DockStyle.Fill;
 			right_layout.FlowDirection = FlowDirection.TopDown;
@@ -289,6 +291,16 @@
 			start_button.UseVisualStyleBackColor = true;
 			start_button.Click += start_button_Click;
 			// 
+			// reset_button
+			// 
+			reset_button.Location = new Point(3, 32);
+			reset_button.Name = "reset_button";
+			reset_button.Size = new Size(75, 23);
+			reset_button.TabIndex = 2;
+			reset_button.Text = "Reset";
+			reset_button.UseVisualStyleBackColor = true;
+			reset_button.Click += reset_button_Click;
+			// 
 			// algStats_container
 			// 
 			algStats_container.AutoSize = true;
@@ -303,7 +315,7 @@
 			algStats_container.Controls.Add(max_title, 0, 3);
 			algStats_container.Controls.Add(avg_displayLabel, 1, 2);
 			algStats_container.Controls.Add(max_displayLabel, 1, 3);
-			algStats_container.Location = new Point(3, 32);
+			algStats_container.Location = new Point(3, 61);
 			algStats_container.Name = "algStats_container";
 			algStats_container.RowCount = 4;
 			algStats_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
@@ -317,13 +329,13 @@
 			// iteration_displayLabel
 			// 
 			iteration_displayLabel.Anchor = AnchorStyles.Left;
-			iteration_displayLabel.AutoSize = true;
-			iteration_displayLabel.Location = new Point(73, 6);
+			iteration_displayLabel.Location = new Point(73, 4);
 			iteration_displayLabel.Margin = new Padding(3, 3, 3, 0);
 			iteration_displayLabel.Name = "iteration_displayLabel";
-			iteration_displayLabel.Size = new Size(13, 15);
+			iteration_displayLabel.Size = new Size(60, 20);
 			iteration_displayLabel.TabIndex = 9;
 			iteration_displayLabel.Text = "0";
+			iteration_displayLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// iteration_title
 			// 
@@ -361,13 +373,13 @@
 			// min_displayLabel
 			// 
 			min_displayLabel.Anchor = AnchorStyles.Left;
-			min_displayLabel.AutoSize = true;
-			min_displayLabel.Location = new Point(73, 31);
+			min_displayLabel.Location = new Point(73, 29);
 			min_displayLabel.Margin = new Padding(3, 3, 3, 0);
 			min_displayLabel.Name = "min_displayLabel";
-			min_displayLabel.Size = new Size(13, 15);
+			min_displayLabel.Size = new Size(60, 20);
 			min_displayLabel.TabIndex = 5;
 			min_displayLabel.Text = "0";
+			min_displayLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// max_title
 			// 
@@ -383,24 +395,24 @@
 			// avg_displayLabel
 			// 
 			avg_displayLabel.Anchor = AnchorStyles.Left;
-			avg_displayLabel.AutoSize = true;
-			avg_displayLabel.Location = new Point(73, 56);
+			avg_displayLabel.Location = new Point(73, 54);
 			avg_displayLabel.Margin = new Padding(3, 3, 3, 0);
 			avg_displayLabel.Name = "avg_displayLabel";
-			avg_displayLabel.Size = new Size(13, 15);
+			avg_displayLabel.Size = new Size(60, 20);
 			avg_displayLabel.TabIndex = 6;
 			avg_displayLabel.Text = "0";
+			avg_displayLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// max_displayLabel
 			// 
 			max_displayLabel.Anchor = AnchorStyles.Left;
-			max_displayLabel.AutoSize = true;
-			max_displayLabel.Location = new Point(73, 81);
+			max_displayLabel.Location = new Point(73, 79);
 			max_displayLabel.Margin = new Padding(3, 3, 3, 0);
 			max_displayLabel.Name = "max_displayLabel";
-			max_displayLabel.Size = new Size(13, 15);
+			max_displayLabel.Size = new Size(60, 20);
 			max_displayLabel.TabIndex = 7;
 			max_displayLabel.Text = "0";
+			max_displayLabel.TextAlign = ContentAlignment.MiddleLeft;
 			// 
 			// middle_layout
 			// 
@@ -589,5 +601,6 @@
 		private Label pmPercent_label;
 		private FunctionGraph functionGraph_graph;
 		private FunctionGraph functionGraph1_graph;
+		private Button reset_button;
 	}
 }
