@@ -48,8 +48,8 @@ internal partial class FunctionGraph : Panel
 	[Category("Appearance")]
 	[Description("Should axes be drawn")]
 	public bool DrawAxes { get; set; } = true;
-	[Category("Appearance")]
-	[Description("Should graph be drawn")]
+	[Category("Behavior")]
+	[Description("How much difference between points of graph")]
 	public float DeltaX { get; set; } = 0.2f;
 	public float StartX
 	{

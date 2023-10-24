@@ -28,57 +28,74 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			left_layout = new FlowLayoutPanel();
-			functionGraph1_graph = new FunctionGraph();
-			function_container = new TableLayoutPanel();
-			function_title = new Label();
-			function_entry = new TextBox();
-			functionOk_button = new Button();
-			xRange_container = new TableLayoutPanel();
-			xRange_title = new Label();
-			xTo_label = new Label();
-			xTo_entry = new TextBox();
-			xFrom_entry = new TextBox();
-			xFrom_label = new Label();
-			bottom_layout = new FlowLayoutPanel();
-			algGraph_PLACEHOLDER = new Panel();
-			mainDivide_layout = new TableLayoutPanel();
-			right_layout = new FlowLayoutPanel();
+			FlowLayoutPanel left_layout;
+			Label function_title;
+			Label xRange_title;
+			Label xTo_label;
+			Label xFrom_label;
+			TableLayoutPanel mainDivide_layout;
+			FlowLayoutPanel right_layout;
+			Label iteration_title;
+			Label avg_title;
+			Label min_title;
+			Label max_title;
+			FlowLayoutPanel middle_layout;
+			Label population_title;
+			Label mutProb_title;
+			Label crossProb_title;
+			Label pkPercent_label;
+			Label pmPercent_label;
+			functionGraph_graph = new FunctionGraph();
 			start_button = new Button();
 			reset_button = new Button();
 			algStats_container = new TableLayoutPanel();
 			iteration_displayLabel = new Label();
+			min_displayLabel = new Label();
+			avg_displayLabel = new Label();
+			max_displayLabel = new Label();
+			function_container = new TableLayoutPanel();
+			function_entry = new TextBox();
+			functionOk_button = new Button();
+			xRange_container = new TableLayoutPanel();
+			xTo_entry = new TextBox();
+			xFrom_entry = new TextBox();
+			algParams_container = new TableLayoutPanel();
+			population_entry = new TextBox();
+			mutProb_entry = new TextBox();
+			crossProb_entry = new TextBox();
+			bottom_layout = new FlowLayoutPanel();
+			algGraph_PLACEHOLDER = new Panel();
+			left_layout = new FlowLayoutPanel();
+			function_title = new Label();
+			xRange_title = new Label();
+			xTo_label = new Label();
+			xFrom_label = new Label();
+			mainDivide_layout = new TableLayoutPanel();
+			right_layout = new FlowLayoutPanel();
 			iteration_title = new Label();
 			avg_title = new Label();
 			min_title = new Label();
-			min_displayLabel = new Label();
 			max_title = new Label();
-			avg_displayLabel = new Label();
-			max_displayLabel = new Label();
 			middle_layout = new FlowLayoutPanel();
-			algParams_container = new TableLayoutPanel();
 			population_title = new Label();
-			population_entry = new TextBox();
 			mutProb_title = new Label();
-			mutProb_entry = new TextBox();
 			crossProb_title = new Label();
-			crossProb_entry = new TextBox();
 			pkPercent_label = new Label();
 			pmPercent_label = new Label();
 			left_layout.SuspendLayout();
-			function_container.SuspendLayout();
-			xRange_container.SuspendLayout();
-			bottom_layout.SuspendLayout();
 			mainDivide_layout.SuspendLayout();
 			right_layout.SuspendLayout();
 			algStats_container.SuspendLayout();
 			middle_layout.SuspendLayout();
+			function_container.SuspendLayout();
+			xRange_container.SuspendLayout();
 			algParams_container.SuspendLayout();
+			bottom_layout.SuspendLayout();
 			SuspendLayout();
 			// 
 			// left_layout
 			// 
-			left_layout.Controls.Add(functionGraph1_graph);
+			left_layout.Controls.Add(functionGraph_graph);
 			left_layout.Dock = DockStyle.Fill;
 			left_layout.FlowDirection = FlowDirection.TopDown;
 			left_layout.Location = new Point(10, 10);
@@ -87,40 +104,23 @@
 			left_layout.Size = new Size(259, 238);
 			left_layout.TabIndex = 0;
 			// 
-			// functionGraph1_graph
+			// functionGraph_graph
 			// 
-			functionGraph1_graph.AxisColor = Color.Black;
-			functionGraph1_graph.AxisFontSize = 5;
-			functionGraph1_graph.BackgroundColor = SystemColors.Control;
-			functionGraph1_graph.DeltaX = 0.2F;
-			functionGraph1_graph.DrawAxes = true;
-			functionGraph1_graph.EndX = 9F;
-			functionGraph1_graph.EquationString = "-0.4*x^2+2*x+10";
-			functionGraph1_graph.GraphColor = Color.Red;
-			functionGraph1_graph.LabelDensity = 10;
-			functionGraph1_graph.Location = new Point(3, 3);
-			functionGraph1_graph.Name = "functionGraph1_graph";
-			functionGraph1_graph.Size = new Size(200, 200);
-			functionGraph1_graph.StartX = -10F;
-			functionGraph1_graph.TabIndex = 0;
-			functionGraph1_graph.YOffset = 10F;
-			// 
-			// function_container
-			// 
-			function_container.AutoSize = true;
-			function_container.ColumnCount = 2;
-			function_container.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-			function_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 40F));
-			function_container.Controls.Add(function_title, 0, 0);
-			function_container.Controls.Add(function_entry, 0, 1);
-			function_container.Controls.Add(functionOk_button, 1, 1);
-			function_container.Location = new Point(3, 3);
-			function_container.Name = "function_container";
-			function_container.RowCount = 2;
-			function_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-			function_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-			function_container.Size = new Size(245, 50);
-			function_container.TabIndex = 1;
+			functionGraph_graph.AxisColor = Color.Black;
+			functionGraph_graph.AxisFontSize = 5;
+			functionGraph_graph.BackgroundColor = SystemColors.Control;
+			functionGraph_graph.DeltaX = 0.2F;
+			functionGraph_graph.DrawAxes = true;
+			functionGraph_graph.EndX = 9F;
+			functionGraph_graph.EquationString = "-0.4*x^2+2*x+10";
+			functionGraph_graph.GraphColor = Color.Red;
+			functionGraph_graph.LabelDensity = 10;
+			functionGraph_graph.Location = new Point(3, 3);
+			functionGraph_graph.Name = "functionGraph_graph";
+			functionGraph_graph.Size = new Size(200, 200);
+			functionGraph_graph.StartX = -10F;
+			functionGraph_graph.TabIndex = 0;
+			functionGraph_graph.YOffset = 10F;
 			// 
 			// function_title
 			// 
@@ -131,50 +131,6 @@
 			function_title.Size = new Size(25, 15);
 			function_title.TabIndex = 0;
 			function_title.Text = "f(x)";
-			// 
-			// function_entry
-			// 
-			function_entry.BackColor = SystemColors.Window;
-			function_entry.Location = new Point(0, 25);
-			function_entry.Margin = new Padding(0, 0, 5, 0);
-			function_entry.Name = "function_entry";
-			function_entry.Size = new Size(200, 23);
-			function_entry.TabIndex = 1;
-			function_entry.TextChanged += function_entry_TextChanged;
-			function_entry.Leave += function_entry_Leave;
-			// 
-			// functionOk_button
-			// 
-			functionOk_button.Location = new Point(205, 25);
-			functionOk_button.Margin = new Padding(0);
-			functionOk_button.Name = "functionOk_button";
-			functionOk_button.Size = new Size(40, 23);
-			functionOk_button.TabIndex = 2;
-			functionOk_button.Text = "Ok";
-			functionOk_button.UseVisualStyleBackColor = true;
-			functionOk_button.Click += functionOk_button_Click;
-			// 
-			// xRange_container
-			// 
-			xRange_container.ColumnCount = 4;
-			xRange_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 25F));
-			xRange_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 75F));
-			xRange_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 25F));
-			xRange_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 75F));
-			xRange_container.Controls.Add(xRange_title, 0, 0);
-			xRange_container.Controls.Add(xTo_label, 2, 1);
-			xRange_container.Controls.Add(xTo_entry, 3, 1);
-			xRange_container.Controls.Add(xFrom_entry, 1, 1);
-			xRange_container.Controls.Add(xFrom_label, 0, 1);
-			xRange_container.Location = new Point(3, 59);
-			xRange_container.Name = "xRange_container";
-			xRange_container.RowCount = 2;
-			xRange_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-			xRange_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
-			xRange_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			xRange_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-			xRange_container.Size = new Size(200, 50);
-			xRange_container.TabIndex = 2;
 			// 
 			// xRange_title
 			// 
@@ -198,28 +154,6 @@
 			xTo_label.TabIndex = 1;
 			xTo_label.Text = "do";
 			// 
-			// xTo_entry
-			// 
-			xTo_entry.Dock = DockStyle.Fill;
-			xTo_entry.Location = new Point(125, 25);
-			xTo_entry.Margin = new Padding(0);
-			xTo_entry.Name = "xTo_entry";
-			xTo_entry.Size = new Size(75, 23);
-			xTo_entry.TabIndex = 3;
-			xTo_entry.TextChanged += xTo_entry_TextChanged;
-			xTo_entry.Leave += xTo_entry_Leave;
-			// 
-			// xFrom_entry
-			// 
-			xFrom_entry.Dock = DockStyle.Fill;
-			xFrom_entry.Location = new Point(25, 25);
-			xFrom_entry.Margin = new Padding(0);
-			xFrom_entry.Name = "xFrom_entry";
-			xFrom_entry.Size = new Size(75, 23);
-			xFrom_entry.TabIndex = 4;
-			xFrom_entry.TextChanged += xFrom_entry_TextChanged;
-			xFrom_entry.Leave += xFrom_entry_Leave;
-			// 
 			// xFrom_label
 			// 
 			xFrom_label.Anchor = AnchorStyles.Left;
@@ -230,25 +164,6 @@
 			xFrom_label.Size = new Size(21, 15);
 			xFrom_label.TabIndex = 2;
 			xFrom_label.Text = "od";
-			// 
-			// bottom_layout
-			// 
-			mainDivide_layout.SetColumnSpan(bottom_layout, 3);
-			bottom_layout.Controls.Add(algGraph_PLACEHOLDER);
-			bottom_layout.Dock = DockStyle.Fill;
-			bottom_layout.Location = new Point(10, 248);
-			bottom_layout.Margin = new Padding(0);
-			bottom_layout.Name = "bottom_layout";
-			bottom_layout.Size = new Size(780, 238);
-			bottom_layout.TabIndex = 2;
-			// 
-			// algGraph_PLACEHOLDER
-			// 
-			algGraph_PLACEHOLDER.BackColor = SystemColors.ControlDark;
-			algGraph_PLACEHOLDER.Location = new Point(3, 3);
-			algGraph_PLACEHOLDER.Name = "algGraph_PLACEHOLDER";
-			algGraph_PLACEHOLDER.Size = new Size(774, 235);
-			algGraph_PLACEHOLDER.TabIndex = 1;
 			// 
 			// mainDivide_layout
 			// 
@@ -289,7 +204,7 @@
 			start_button.Location = new Point(3, 3);
 			start_button.Name = "start_button";
 			start_button.Size = new Size(75, 23);
-			start_button.TabIndex = 0;
+			start_button.TabIndex = 1;
 			start_button.Text = "Start";
 			start_button.UseVisualStyleBackColor = true;
 			start_button.Click += start_button_Click;
@@ -428,6 +343,89 @@
 			middle_layout.Size = new Size(253, 232);
 			middle_layout.TabIndex = 3;
 			// 
+			// function_container
+			// 
+			function_container.AutoSize = true;
+			function_container.ColumnCount = 2;
+			function_container.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+			function_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 40F));
+			function_container.Controls.Add(function_title, 0, 0);
+			function_container.Controls.Add(function_entry, 0, 1);
+			function_container.Controls.Add(functionOk_button, 1, 1);
+			function_container.Location = new Point(3, 3);
+			function_container.Name = "function_container";
+			function_container.RowCount = 2;
+			function_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+			function_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+			function_container.Size = new Size(245, 50);
+			function_container.TabIndex = 1;
+			// 
+			// function_entry
+			// 
+			function_entry.BackColor = SystemColors.Window;
+			function_entry.Location = new Point(0, 25);
+			function_entry.Margin = new Padding(0, 0, 5, 0);
+			function_entry.Name = "function_entry";
+			function_entry.Size = new Size(200, 23);
+			function_entry.TabIndex = 1;
+			function_entry.TextChanged += function_entry_TextChanged;
+			function_entry.Leave += function_entry_Leave;
+			// 
+			// functionOk_button
+			// 
+			functionOk_button.Location = new Point(205, 25);
+			functionOk_button.Margin = new Padding(0);
+			functionOk_button.Name = "functionOk_button";
+			functionOk_button.Size = new Size(40, 23);
+			functionOk_button.TabIndex = 2;
+			functionOk_button.Text = "Ok";
+			functionOk_button.UseVisualStyleBackColor = true;
+			functionOk_button.Click += functionOk_button_Click;
+			// 
+			// xRange_container
+			// 
+			xRange_container.ColumnCount = 4;
+			xRange_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 25F));
+			xRange_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 75F));
+			xRange_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 25F));
+			xRange_container.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 75F));
+			xRange_container.Controls.Add(xRange_title, 0, 0);
+			xRange_container.Controls.Add(xTo_label, 2, 1);
+			xRange_container.Controls.Add(xTo_entry, 3, 1);
+			xRange_container.Controls.Add(xFrom_entry, 1, 1);
+			xRange_container.Controls.Add(xFrom_label, 0, 1);
+			xRange_container.Location = new Point(3, 59);
+			xRange_container.Name = "xRange_container";
+			xRange_container.RowCount = 2;
+			xRange_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+			xRange_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
+			xRange_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			xRange_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+			xRange_container.Size = new Size(200, 50);
+			xRange_container.TabIndex = 2;
+			// 
+			// xTo_entry
+			// 
+			xTo_entry.Dock = DockStyle.Fill;
+			xTo_entry.Location = new Point(125, 25);
+			xTo_entry.Margin = new Padding(0);
+			xTo_entry.Name = "xTo_entry";
+			xTo_entry.Size = new Size(75, 23);
+			xTo_entry.TabIndex = 2;
+			xTo_entry.TextChanged += xTo_entry_TextChanged;
+			xTo_entry.Leave += xTo_entry_Leave;
+			// 
+			// xFrom_entry
+			// 
+			xFrom_entry.Dock = DockStyle.Fill;
+			xFrom_entry.Location = new Point(25, 25);
+			xFrom_entry.Margin = new Padding(0);
+			xFrom_entry.Name = "xFrom_entry";
+			xFrom_entry.Size = new Size(75, 23);
+			xFrom_entry.TabIndex = 1;
+			xFrom_entry.TextChanged += xFrom_entry_TextChanged;
+			xFrom_entry.Leave += xFrom_entry_Leave;
+			// 
 			// algParams_container
 			// 
 			algParams_container.AutoSize = true;
@@ -451,7 +449,7 @@
 			algParams_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
 			algParams_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
 			algParams_container.Size = new Size(200, 75);
-			algParams_container.TabIndex = 0;
+			algParams_container.TabIndex = 3;
 			// 
 			// population_title
 			// 
@@ -493,7 +491,7 @@
 			mutProb_entry.Margin = new Padding(0);
 			mutProb_entry.Name = "mutProb_entry";
 			mutProb_entry.Size = new Size(100, 23);
-			mutProb_entry.TabIndex = 3;
+			mutProb_entry.TabIndex = 4;
 			mutProb_entry.TextChanged += mutProb_entry_TextChanged;
 			mutProb_entry.Leave += mutProb_entry_Leave;
 			// 
@@ -515,7 +513,7 @@
 			crossProb_entry.Margin = new Padding(0);
 			crossProb_entry.Name = "crossProb_entry";
 			crossProb_entry.Size = new Size(100, 23);
-			crossProb_entry.TabIndex = 1;
+			crossProb_entry.TabIndex = 3;
 			crossProb_entry.TextChanged += crossProb_entry_TextChanged;
 			crossProb_entry.Leave += crossProb_entry_Leave;
 			// 
@@ -541,6 +539,25 @@
 			pmPercent_label.TabIndex = 7;
 			pmPercent_label.Text = "%";
 			// 
+			// bottom_layout
+			// 
+			mainDivide_layout.SetColumnSpan(bottom_layout, 3);
+			bottom_layout.Controls.Add(algGraph_PLACEHOLDER);
+			bottom_layout.Dock = DockStyle.Fill;
+			bottom_layout.Location = new Point(10, 248);
+			bottom_layout.Margin = new Padding(0);
+			bottom_layout.Name = "bottom_layout";
+			bottom_layout.Size = new Size(780, 238);
+			bottom_layout.TabIndex = 2;
+			// 
+			// algGraph_PLACEHOLDER
+			// 
+			algGraph_PLACEHOLDER.BackColor = SystemColors.ControlDark;
+			algGraph_PLACEHOLDER.Location = new Point(3, 3);
+			algGraph_PLACEHOLDER.Name = "algGraph_PLACEHOLDER";
+			algGraph_PLACEHOLDER.Size = new Size(774, 235);
+			algGraph_PLACEHOLDER.TabIndex = 1;
+			// 
 			// MainForm
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
@@ -552,11 +569,6 @@
 			ShowIcon = false;
 			Text = "Algorytmy ewolucyjne - max funkcji";
 			left_layout.ResumeLayout(false);
-			function_container.ResumeLayout(false);
-			function_container.PerformLayout();
-			xRange_container.ResumeLayout(false);
-			xRange_container.PerformLayout();
-			bottom_layout.ResumeLayout(false);
 			mainDivide_layout.ResumeLayout(false);
 			right_layout.ResumeLayout(false);
 			right_layout.PerformLayout();
@@ -564,8 +576,13 @@
 			algStats_container.PerformLayout();
 			middle_layout.ResumeLayout(false);
 			middle_layout.PerformLayout();
+			function_container.ResumeLayout(false);
+			function_container.PerformLayout();
+			xRange_container.ResumeLayout(false);
+			xRange_container.PerformLayout();
 			algParams_container.ResumeLayout(false);
 			algParams_container.PerformLayout();
+			bottom_layout.ResumeLayout(false);
 			ResumeLayout(false);
 		}
 
@@ -606,7 +623,6 @@
 		private Label pkPercent_label;
 		private Label pmPercent_label;
 		private FunctionGraph functionGraph_graph;
-		private FunctionGraph functionGraph1_graph;
 		private Button reset_button;
 	}
 }

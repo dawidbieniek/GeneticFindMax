@@ -2,12 +2,17 @@ using System.Globalization;
 
 namespace AE1;
 
-//TODO: Better navigation (tab) in form
 
 public partial class MainForm : Form
 {
 	private static readonly CultureInfo DotForDecimalSeparatorCulture = new("en-US");
 
+	private readonly string _defaultFunction = "-0.4*x^2+2*x+10";
+	private readonly int _defaultStartX = -1;
+	private readonly int _defaultEndX = 26;
+	private readonly float _defaultPk = 80;
+	private readonly float _defaultPm = 1;
+	private readonly int _defaultPopulation = 100;
 	private bool _wrongFunction;
 	private bool _wrongParameters;
 	private bool _isThreadPaused;
@@ -15,33 +20,12 @@ public partial class MainForm : Form
 	private Thread? _gaThread;
 	private ManualResetEvent? _gaResetEvent;
 
-	private readonly string _defaultFunction = "-0.4*x^2+2*x+10";
-	private readonly int _defaultStartX = -1;
-	private readonly int _defaultEndX = 26;
-	private readonly float _defaultPk = 100;
-	private readonly float _defaultPm = 1;
-	private readonly int _defaultPopulation = 100;
-
 	public MainForm()
 	{
 		CultureInfo.CurrentCulture = DotForDecimalSeparatorCulture;
 		InitializeComponent();
 
 		SetDefaultValues();
-	}
-
-	private void SetDefaultValues()
-	{
-		function_entry.Text = _defaultFunction;
-		functionGraph1_graph.EquationString = _defaultFunction;
-		xFrom_entry.Text = _defaultStartX.ToString();
-		functionGraph1_graph.StartX = _defaultStartX;
-		xTo_entry.Text = _defaultEndX.ToString();
-		functionGraph1_graph.EndX = _defaultEndX;
-
-		crossProb_entry.Text = _defaultPk.ToString();
-		mutProb_entry.Text = _defaultPm.ToString();
-		population_entry.Text = _defaultPopulation.ToString();
 	}
 
 	private bool WrongFunction
@@ -71,11 +55,24 @@ public partial class MainForm : Form
 		set
 		{
 			_isThreadPaused = value;
-			if (!value)
-			{
-				start_button.Text = "Pause";
-			}
+			start_button.Text = !value ? "Pause" : "Start";
 		}
+	}
+
+	private void SetDefaultValues()
+	{
+		function_entry.Text = _defaultFunction;
+		functionGraph_graph.EquationString = _defaultFunction;
+		xFrom_entry.Text = _defaultStartX.ToString();
+		functionGraph_graph.StartX = _defaultStartX;
+		xTo_entry.Text = _defaultEndX.ToString();
+		functionGraph_graph.EndX = _defaultEndX;
+		WrongFunction = false;
+
+		crossProb_entry.Text = _defaultPk.ToString();
+		mutProb_entry.Text = _defaultPm.ToString();
+		population_entry.Text = _defaultPopulation.ToString();
+		WrongParameters = false;
 	}
 
 	private void UpdateStartButtonEnabledState()
@@ -99,9 +96,9 @@ public partial class MainForm : Form
 
 	private void functionOk_button_Click(object sender, EventArgs e)
 	{
-		functionGraph1_graph.EquationString = function_entry.Text;  // TODO: Rename graph
-		functionGraph1_graph.StartX = Convert.ToInt32(xFrom_entry.Text);
-		functionGraph1_graph.EndX = Convert.ToInt32(xTo_entry.Text);
+		functionGraph_graph.EquationString = function_entry.Text;
+		functionGraph_graph.StartX = Convert.ToInt32(xFrom_entry.Text);
+		functionGraph_graph.EndX = Convert.ToInt32(xTo_entry.Text);
 	}
 
 	private void xFrom_entry_TextChanged(object sender, EventArgs e)
@@ -237,7 +234,7 @@ public partial class MainForm : Form
 
 	private void function_entry_Leave(object sender, EventArgs e)
 	{
-		if(string.IsNullOrEmpty(function_entry.Text))
+		if (string.IsNullOrEmpty(function_entry.Text))
 		{
 			function_entry.Text = _defaultFunction;
 			function_entry.ForeColor = SystemColors.WindowText;
