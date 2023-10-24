@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			left_layout = new FlowLayoutPanel();
-			functionGraph1 = new FunctionGraph();
+			functionGraph1_graph = new FunctionGraph();
 			function_container = new TableLayoutPanel();
 			function_title = new Label();
 			function_entry = new TextBox();
@@ -77,7 +77,7 @@
 			// 
 			// left_layout
 			// 
-			left_layout.Controls.Add(functionGraph1);
+			left_layout.Controls.Add(functionGraph1_graph);
 			left_layout.Dock = DockStyle.Fill;
 			left_layout.FlowDirection = FlowDirection.TopDown;
 			left_layout.Location = new Point(10, 10);
@@ -86,23 +86,23 @@
 			left_layout.Size = new Size(259, 238);
 			left_layout.TabIndex = 0;
 			// 
-			// functionGraph1
+			// functionGraph1_graph
 			// 
-			functionGraph1.AxisColor = Color.Black;
-			functionGraph1.AxisFontSize = 5;
-			functionGraph1.BackgroundColor = Color.White;
-			functionGraph1.DeltaX = 0.2F;
-			functionGraph1.DrawAxes = true;
-			functionGraph1.EndX = 9F;
-			functionGraph1.EquationString = "-0.4*x^2+2*x+10";
-			functionGraph1.GraphColor = Color.Red;
-			functionGraph1.LabelDensity = 10;
-			functionGraph1.Location = new Point(3, 3);
-			functionGraph1.Name = "functionGraph1";
-			functionGraph1.Size = new Size(200, 200);
-			functionGraph1.StartX = -10F;
-			functionGraph1.TabIndex = 0;
-			functionGraph1.YOffset = 10F;
+			functionGraph1_graph.AxisColor = Color.Black;
+			functionGraph1_graph.AxisFontSize = 5;
+			functionGraph1_graph.BackgroundColor = SystemColors.Control;
+			functionGraph1_graph.DeltaX = 0.2F;
+			functionGraph1_graph.DrawAxes = true;
+			functionGraph1_graph.EndX = 9F;
+			functionGraph1_graph.EquationString = "-0.4*x^2+2*x+10";
+			functionGraph1_graph.GraphColor = Color.Red;
+			functionGraph1_graph.LabelDensity = 10;
+			functionGraph1_graph.Location = new Point(3, 3);
+			functionGraph1_graph.Name = "functionGraph1_graph";
+			functionGraph1_graph.Size = new Size(200, 200);
+			functionGraph1_graph.StartX = -10F;
+			functionGraph1_graph.TabIndex = 0;
+			functionGraph1_graph.YOffset = 10F;
 			// 
 			// function_container
 			// 
@@ -133,11 +133,13 @@
 			// 
 			// function_entry
 			// 
+			function_entry.BackColor = SystemColors.Window;
 			function_entry.Location = new Point(0, 25);
 			function_entry.Margin = new Padding(0, 0, 5, 0);
 			function_entry.Name = "function_entry";
 			function_entry.Size = new Size(200, 23);
 			function_entry.TabIndex = 1;
+			function_entry.TextChanged += function_entry_TextChanged;
 			// 
 			// functionOk_button
 			// 
@@ -148,6 +150,7 @@
 			functionOk_button.TabIndex = 2;
 			functionOk_button.Text = "Ok";
 			functionOk_button.UseVisualStyleBackColor = true;
+			functionOk_button.Click += functionOk_button_Click;
 			// 
 			// xRange_container
 			// 
@@ -201,6 +204,7 @@
 			xTo_entry.Name = "xTo_entry";
 			xTo_entry.Size = new Size(75, 23);
 			xTo_entry.TabIndex = 3;
+			xTo_entry.TextChanged += xTo_entry_TextChanged;
 			// 
 			// xFrom_entry
 			// 
@@ -210,6 +214,7 @@
 			xFrom_entry.Name = "xFrom_entry";
 			xFrom_entry.Size = new Size(75, 23);
 			xFrom_entry.TabIndex = 4;
+			xFrom_entry.TextChanged += xFrom_entry_TextChanged;
 			// 
 			// xFrom_label
 			// 
@@ -282,6 +287,7 @@
 			start_button.TabIndex = 0;
 			start_button.Text = "Start";
 			start_button.UseVisualStyleBackColor = true;
+			start_button.Click += start_button_Click;
 			// 
 			// algStats_container
 			// 
@@ -422,7 +428,8 @@
 			algParams_container.Controls.Add(crossProb_entry, 1, 0);
 			algParams_container.Controls.Add(pkPercent_label, 2, 0);
 			algParams_container.Controls.Add(pmPercent_label, 2, 1);
-			algParams_container.Location = new Point(3, 115);
+			algParams_container.Location = new Point(3, 135);
+			algParams_container.Margin = new Padding(3, 23, 3, 3);
 			algParams_container.Name = "algParams_container";
 			algParams_container.RowCount = 3;
 			algParams_container.RowStyles.Add(new RowStyle(SizeType.Absolute, 25F));
@@ -450,6 +457,7 @@
 			population_entry.Name = "population_entry";
 			population_entry.Size = new Size(100, 23);
 			population_entry.TabIndex = 5;
+			population_entry.TextChanged += population_entry_TextChanged;
 			// 
 			// mutProb_title
 			// 
@@ -470,6 +478,7 @@
 			mutProb_entry.Name = "mutProb_entry";
 			mutProb_entry.Size = new Size(100, 23);
 			mutProb_entry.TabIndex = 3;
+			mutProb_entry.TextChanged += mutProb_entry_TextChanged;
 			// 
 			// crossProb_title
 			// 
@@ -490,6 +499,7 @@
 			crossProb_entry.Name = "crossProb_entry";
 			crossProb_entry.Size = new Size(100, 23);
 			crossProb_entry.TabIndex = 1;
+			crossProb_entry.TextChanged += crossProb_entry_TextChanged;
 			// 
 			// pkPercent_label
 			// 
@@ -577,6 +587,7 @@
 		private Button functionOk_button;
 		private Label pkPercent_label;
 		private Label pmPercent_label;
-		private FunctionGraph functionGraph1;
+		private FunctionGraph functionGraph_graph;
+		private FunctionGraph functionGraph1_graph;
 	}
 }

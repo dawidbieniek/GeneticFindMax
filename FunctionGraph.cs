@@ -27,7 +27,7 @@ internal partial class FunctionGraph : Panel
 			if (_equationString != value)
 			{
 				_equationString = value;
-				_expression = new(PreprocessEquation(value));
+				_expression = new(NCalcHelpers.PreprocessEquation(value));
 				Invalidate();
 			}
 		}
@@ -98,17 +98,6 @@ internal partial class FunctionGraph : Panel
 			}
 			e.Graphics.DrawImage(bmp, Point.Empty);
 		}
-	}
-
-	[GeneratedRegex(@"x\^(\d+)")]
-	private static partial Regex PowRegex();
-	//x^2
-	private string PreprocessEquation(string equation)
-	{
-		// Replace '^' with 'Pow'
-		equation = PowRegex().Replace(equation, match => $"Pow(x, {match.Groups[1].Value})");
-		// Replace 'x' with '[x]' (needed for substitution of parameter)
-		return equation.Replace("X", "x").Replace("x", "[x]");
 	}
 
 	private void GenerateGraph(bool empty = false)

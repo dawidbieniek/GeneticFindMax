@@ -13,14 +13,12 @@ internal class GeneticAlgorithm
 	private readonly float _mutationProbability;
 	private readonly int _chromosomeLength;
 	private readonly Expression _valueFunction;
-	private int[] _population;
-
 	private readonly int _minX;
 	private readonly int _maxX;
-
 	private readonly int _maxValue;
+	private int[] _population;
 
-	public GeneticAlgorithm(float crossingProbability, float mutationProbability, int populationSize, string valueFunctionString, int minX, int maxX, float minY)
+	public GeneticAlgorithm(float crossingProbability, float mutationProbability, int populationSize, string valueFunctionString, int minX, int maxX)
 	{
 		_crossingProbability = crossingProbability / 100;
 		_mutationProbability = mutationProbability / 100;
@@ -31,7 +29,8 @@ internal class GeneticAlgorithm
 		// Chromosome length is nearest, greater or equal, power of 2
 		_chromosomeLength = (int)Math.Ceiling(Math.Log(maxX - minX, 2));
 		// Value function is math function offset by smallest value
-		_valueFunction = new(valueFunctionString + $"+{minY}");
+		float minY = FindFunctionMin(valueFunctionString, 0.2f);    // TODO: To chyba nie najlepszy sposób
+		_valueFunction = new(NCalcHelpers.PreprocessEquation(valueFunctionString + $"+{minY}"));
 		// Population initialized with random values
 		int maxValue = 1 << _chromosomeLength;
 		_population = Enumerable.Repeat(0, populationSize).Select(i => Rnd.Next(maxValue)).ToArray();
@@ -62,14 +61,29 @@ internal class GeneticAlgorithm
 		_population = DoMutation(DoCrossing(DoSelection(EvaluateFitness())));
 	}
 
+	private float FindFunctionMin(string function, float deltaX)
+	{
+		float min = float.MaxValue;
+		Expression expr = new(NCalcHelpers.PreprocessEquation(function));
+		for (float x = _minX; x <= _maxX; x += deltaX)
+		{
+			expr.Parameters["x"] = x;
+			float value = Convert.ToSingle(expr.Evaluate());
+			if (value < min)
+				min = value;
+		}
+
+		return min;
+	}
+
 	/// <summary>
 	/// Calculates fitness of each member of population
 	/// </summary>
 	/// <returns> <see cref="IEnumerable{T}"/> of fitness values </returns>
-	private IEnumerable<float> EvaluateFitness() => _population.Select(i => 
-	{ 
-		_valueFunction.Parameters["x"] = Decode(i); 
-		return Convert.ToSingle(_valueFunction.Evaluate()); 
+	private IEnumerable<float> EvaluateFitness() => _population.Select(i =>
+	{
+		_valueFunction.Parameters["x"] = Decode(i);
+		return Convert.ToSingle(_valueFunction.Evaluate());
 	});
 
 	/// <summary>
@@ -148,7 +162,7 @@ internal class GeneticAlgorithm
 			}
 		}
 
-			return crossed;
+		return crossed;
 	}
 
 	/// <summary>
