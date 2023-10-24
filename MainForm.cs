@@ -2,7 +2,6 @@ using System.Globalization;
 
 namespace AE1;
 
-
 public partial class MainForm : Form
 {
 	private static readonly CultureInfo DotForDecimalSeparatorCulture = new("en-US");
@@ -19,6 +18,7 @@ public partial class MainForm : Form
 
 	private Thread? _gaThread;
 	private ManualResetEvent? _gaResetEvent;
+	private CancellationTokenSource? _gaCancelationToken;
 
 	public MainForm()
 	{
@@ -55,7 +55,18 @@ public partial class MainForm : Form
 		set
 		{
 			_isThreadPaused = value;
-			start_button.Text = !value ? "Pause" : "Start";
+			start_button.Text = value ? "Start" : "Pause";
+		}
+	}
+
+	private Thread? GaThread
+	{
+		get => _gaThread;
+		set
+		{
+			_gaThread = value;
+
+			reset_button.Enabled = value is not null;
 		}
 	}
 
@@ -73,6 +84,8 @@ public partial class MainForm : Form
 		mutProb_entry.Text = _defaultPm.ToString();
 		population_entry.Text = _defaultPopulation.ToString();
 		WrongParameters = false;
+
+		GaThread = null;
 	}
 
 	private void UpdateStartButtonEnabledState()
@@ -173,21 +186,23 @@ public partial class MainForm : Form
 
 	private void start_button_Click(object sender, EventArgs e)
 	{
-		if (_gaThread is null)
+		if (GaThread is null)
 		{
 			GeneticAlgorithm ga = new(Convert.ToSingle(crossProb_entry.Text),
-				Convert.ToSingle(mutProb_entry.Text),
-				Convert.ToInt32(population_entry.Text),
-				function_entry.Text,
-				Convert.ToInt32(xFrom_entry.Text),
-				Convert.ToInt32(xTo_entry.Text));
+							 Convert.ToSingle(mutProb_entry.Text),
+							 Convert.ToInt32(population_entry.Text),
+							 function_entry.Text,
+							 Convert.ToInt32(xFrom_entry.Text),
+							 Convert.ToInt32(xTo_entry.Text));
 
 			_gaResetEvent = new(true);
 			IsThreadPaused = false;
 
-			_gaThread = new(new ThreadStart(delegate { PerformGeneticAlgorithm(ga); }));
+			_gaCancelationToken = new();
 
-			_gaThread.Start();
+			GaThread = new(new ThreadStart(delegate { PerformGeneticAlgorithm(ga); }));
+
+			GaThread.Start();
 		}
 		else
 		{
@@ -212,6 +227,22 @@ public partial class MainForm : Form
 		for (int i = 0; i < 100000; i++)
 		{
 			_gaResetEvent!.WaitOne();
+
+			if (_gaCancelationToken!.IsCancellationRequested)
+			{
+				Invoke((MethodInvoker)delegate
+					{
+						iteration_displayLabel.Text = "0";
+						min_displayLabel.Text = "0";
+						avg_displayLabel.Text = "0";
+						max_displayLabel.Text = "0";
+						IsThreadPaused = true;
+						GaThread = null;
+					});
+
+				break;
+			}
+
 			ga.Step();
 
 			GeneticAlgorithm.StatisticalValues stats = ga.CurrentStatisticalValues;
@@ -223,13 +254,14 @@ public partial class MainForm : Form
 			avg_displayLabel.Text = stats.Avg.ToString("n2");
 			max_displayLabel.Text = stats.Max.ToString("n2");
 		});
-
-			//Thread.Sleep(500);
 		}
 	}
 
 	private void reset_button_Click(object sender, EventArgs e)
 	{
+		_gaCancelationToken!.Cancel();
+		if (IsThreadPaused)
+			_gaResetEvent!.Set();
 	}
 
 	private void function_entry_Leave(object sender, EventArgs e)
