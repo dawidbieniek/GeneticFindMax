@@ -11,7 +11,7 @@ public partial class MainForm : Form
 	private readonly int _defaultEndX = 26;
 	private readonly float _defaultPk = 80;
 	private readonly float _defaultPm = 1;
-	private readonly int _defaultPopulation = 100;
+	private readonly int _defaultPopulation = 10;   //TODO: Change to 100
 	private bool _wrongFunction;
 	private bool _wrongParameters;
 	private bool _isThreadPaused;
@@ -147,7 +147,7 @@ public partial class MainForm : Form
 		if (MyRegexes.PositiveFloatNumberRegex().IsMatch(crossProb_entry.Text) && Convert.ToSingle(crossProb_entry.Text) <= 100f)
 		{
 			crossProb_entry.ForeColor = SystemColors.WindowText;
-			WrongParameters = true;
+			WrongParameters = false;
 		}
 		else
 		{
@@ -161,7 +161,7 @@ public partial class MainForm : Form
 		if (MyRegexes.PositiveFloatNumberRegex().IsMatch(mutProb_entry.Text) && Convert.ToSingle(mutProb_entry.Text) <= 100f)
 		{
 			mutProb_entry.ForeColor = SystemColors.WindowText;
-			WrongParameters = true;
+			WrongParameters = false;
 		}
 		else
 		{
@@ -175,7 +175,7 @@ public partial class MainForm : Form
 		if (MyRegexes.PositiveIntNumberRegex().IsMatch(population_entry.Text))
 		{
 			population_entry.ForeColor = SystemColors.WindowText;
-			WrongParameters = true;
+			WrongParameters = false;
 		}
 		else
 		{
@@ -243,6 +243,8 @@ public partial class MainForm : Form
 			// Update labels
 			if (!IsDisposed)
 				Invoke((MethodInvoker)delegate { SetLabels(stats.Min.ToString("n2"), stats.Avg.ToString("n2"), stats.Max.ToString("n2"), i.ToString()); });
+
+			Thread.Sleep(10);
 		}
 	}
 
