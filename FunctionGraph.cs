@@ -83,13 +83,13 @@ internal partial class FunctionGraph : Panel
 	{
 		base.OnPaint(e);
 
-		GenerateGraph(string.IsNullOrEmpty(EquationString));
+		_bitmap = GenerateGraph(string.IsNullOrEmpty(EquationString));
 
 		if (_bitmap is not null)
 			e.Graphics.DrawImage(_bitmap, Point.Empty);
 		else
 		{
-			Bitmap bmp = new Bitmap(Width, Height);
+			Bitmap bmp = new(Width, Height);
 			using (Graphics graphics = Graphics.FromImage(bmp))
 			{
 				// Fill the entire bitmap with gray
@@ -100,58 +100,62 @@ internal partial class FunctionGraph : Panel
 		}
 	}
 
-	private void GenerateGraph(bool empty = false)
+	private Bitmap GenerateGraph(bool empty = false)
 	{
-		_bitmap = new(Width, Height);
+		Bitmap bitmap = new(Width, Height);
 
-		Graphics g = Graphics.FromImage(_bitmap);
-		SolidBrush backgroundBrush = new(BackgroundColor);
-
-		// Clear background
-		g.FillRectangle(backgroundBrush, 0, 0, Width, Height);
-
-		if (!empty)
+		using (Graphics g = Graphics.FromImage(bitmap))
 		{
-			int pointCount = (int)MathF.Ceiling((EndX - StartX) / DeltaX) + 1;
+			SolidBrush backgroundBrush = new(BackgroundColor);
 
-			// Calculate all graph values
-			float[] values = new float[pointCount];
+			// Clear background
+			g.FillRectangle(backgroundBrush, 0, 0, Width, Height);
 
-			for (int i = 0; i < pointCount - 1; i++)
+			if (!empty)
 			{
-				float x = (i * DeltaX) + StartX;
-				_expression!.Parameters["x"] = x;
-				values[i] = Convert.ToSingle(_expression.Evaluate());
-			}
+				int pointCount = (int)MathF.Ceiling((EndX - StartX) / DeltaX) + 1;
 
-			_expression!.Parameters["x"] = EndX;
-			values[^1] = Convert.ToSingle(_expression.Evaluate());
+				// Calculate all graph values
+				float[] values = new float[pointCount];
 
-			// Draw graph
-			DrawGraph(g, values, pointCount);
+				for (int i = 0; i < values.Length - 1; i++)
+				{
+					float x = (i * DeltaX) + StartX;
+					_expression!.Parameters["x"] = x;
+					values[i] = Convert.ToSingle(_expression.Evaluate());
+				}
 
-			// Draw axes
-			if (DrawAxes)
-			{
-				DrawAxesOnGraph(g, values);
+				_expression!.Parameters["x"] = EndX;
+				values[^1] = Convert.ToSingle(_expression.Evaluate());
+
+				// Draw graph
+				DrawGraph(g, values);
+
+				// Draw axes
+				if (DrawAxes)
+				{
+					DrawAxesOnGraph(g, values);
+				}
 			}
 		}
+
+		return bitmap;
 	}
 
-	private void DrawGraph(Graphics g, float[] values, int pointCount)
+	private void DrawGraph(Graphics g, float[] values)
 	{
 		Pen graphPen = new(GraphColor);
 
 		float minVal = (float)values.Min();
 		float maxVal = (float)values.Max();
 
-		float xPixelDelta = Math.Max((float)Width / pointCount, 1);
-		float yPixelDelta = Math.Max((float)(Height - YOffset) / (maxVal - minVal), 1);
+		float xPixelDelta = (float)Width / values.Length;
+		float yPixelDelta = (float)(Height - YOffset) / (maxVal - minVal);
 
 		float prevX = 0;
 		float prevY = -((values[0] - minVal) * yPixelDelta) + Height - YOffset;
 
-		for (int i = 1; i < pointCount; i++)
+		for (int i = 1; i < values.Length; i++)
 		{
 			float xImage = i * xPixelDelta;
 			float yImage = -((values[i] - minVal) * yPixelDelta) + Height - YOffset;

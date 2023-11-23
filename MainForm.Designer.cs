@@ -109,9 +109,9 @@
 			functionGraph_graph.AxisColor = Color.Black;
 			functionGraph_graph.AxisFontSize = 5;
 			functionGraph_graph.BackgroundColor = SystemColors.Control;
-			functionGraph_graph.DeltaX = 0.2F;
+			functionGraph_graph.DeltaX = 0.1F;
 			functionGraph_graph.DrawAxes = true;
-			functionGraph_graph.EndX = 9F;
+			functionGraph_graph.EndX = 26F;
 			functionGraph_graph.EquationString = "-0.4*x^2+2*x+10";
 			functionGraph_graph.GraphColor = Color.Red;
 			functionGraph_graph.LabelDensity = 10;
