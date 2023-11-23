@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 
+using Antlr.Runtime.Tree;
+
 namespace AE1;
 
 internal abstract partial class GraphBase : Panel
@@ -7,9 +9,11 @@ internal abstract partial class GraphBase : Panel
 	private Bitmap _placeholder;
 	private float _startX = -1;
 	private float _endX = 26;
+	private bool _skipGraphDuringDesign;
 
-	public GraphBase()
+	public GraphBase(bool skipDrawDuringDesign = false)
 	{
+		_skipGraphDuringDesign = skipDrawDuringDesign;
 		_placeholder = GeneratePlaceholder();
 	}
 
@@ -70,8 +74,6 @@ internal abstract partial class GraphBase : Panel
 	[Browsable(false)]
 	public float? MaxValue { get; protected set; } = null;
 
-	protected bool DrawDuringDesign { get; set; } = true;
-
 	protected virtual Bitmap GenerateGraph()
 	{
 		Bitmap bmp = new(Width, Height);
@@ -80,19 +82,21 @@ internal abstract partial class GraphBase : Panel
 		{
 			DrawBackground(g);
 
-			if (DrawDuringDesign && DesignMode)
-			{
-				DrawGraph(g);
+			if (_skipGraphDuringDesign && DesignMode)
+				return bmp;
 
-				if (DrawAxes)
+			DrawGraph(g);
+
+			if (DrawAxes)
+			{
+				PointF axisPoint = DrawAxesOnGraph(g);
+				if (DrawLabels)
 				{
-					PointF axisPoint = DrawAxesOnGraph(g);
-					if (DrawLabels)
-					{
-						DrawGraphLabels(g, axisPoint);
-					}
+					DrawGraphLabels(g, axisPoint);
 				}
 			}
+
+			DrawLegend(g);
 		}
 
 		return bmp;
@@ -165,6 +169,9 @@ internal abstract partial class GraphBase : Panel
 			g.DrawString(MathF.Round(MaxValue!.Value - (i * yLabelDelta), 1).ToString(), LabelsFont, axisBrush, axisPoint.X + 5, i * xLabelPixelDelta);
 		}
 	}
+
+	protected virtual void DrawLegend(Graphics g)
+	{ }
 
 	protected override void OnResize(EventArgs e)
 	{

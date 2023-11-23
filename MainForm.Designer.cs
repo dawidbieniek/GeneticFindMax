@@ -103,6 +103,7 @@
 			left_layout.Name = "left_layout";
 			left_layout.Size = new Size(259, 238);
 			left_layout.TabIndex = 0;
+			left_layout.Paint += left_layout_Paint;
 			// 
 			// functionGraph_graph
 			// 
@@ -558,10 +559,10 @@
 			statsGraph_graph.AxisColor = Color.Black;
 			statsGraph_graph.BackgroundColor = SystemColors.Control;
 			statsGraph_graph.BorderStyle = BorderStyle.FixedSingle;
-			statsGraph_graph.DeltaX = 0.2F;
+			statsGraph_graph.DeltaX = 1F;
 			statsGraph_graph.DrawAxes = true;
 			statsGraph_graph.DrawLabels = true;
-			statsGraph_graph.EndX = 26F;
+			statsGraph_graph.EndX = 700F;
 			statsGraph_graph.LabelDensity = 10;
 			statsGraph_graph.LabelsFont = new Font("Microsoft Sans Serif", 5F);
 			statsGraph_graph.Location = new Point(3, 3);
@@ -569,7 +570,7 @@
 			statsGraph_graph.MinGraphColor = Color.Orange;
 			statsGraph_graph.Name = "statsGraph_graph";
 			statsGraph_graph.Size = new Size(777, 235);
-			statsGraph_graph.StartX = -1F;
+			statsGraph_graph.StartX = 0F;
 			statsGraph_graph.TabIndex = 0;
 			statsGraph_graph.YOffset = 0F;
 			// 

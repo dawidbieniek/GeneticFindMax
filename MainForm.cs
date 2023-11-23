@@ -242,7 +242,10 @@ public partial class MainForm : Form
 
 			// Update labels
 			if (!IsDisposed)
+			{
 				Invoke((MethodInvoker)delegate { SetLabels(stats.Min.ToString("n2"), stats.Avg.ToString("n2"), stats.Max.ToString("n2"), i.ToString()); });
+				Invoke((MethodInvoker)delegate { statsGraph_graph.AddStats(stats.Min, stats.Avg, stats.Max); });
+			}
 
 			Thread.Sleep(10);
 		}
@@ -333,5 +336,9 @@ public partial class MainForm : Form
 	{
 		_gaCancelationToken?.Cancel();
 		// TODO: safely close thread
+	}
+
+	private void left_layout_Paint(object sender, PaintEventArgs e)
+	{
 	}
 }
