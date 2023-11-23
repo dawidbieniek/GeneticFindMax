@@ -8,6 +8,11 @@ internal abstract partial class GraphBase : Panel
 	private float _startX = -1;
 	private float _endX = 26;
 
+	public GraphBase()
+	{
+		_placeholder = GeneratePlaceholder();
+	}
+
 	[Category("Config")]
 	[Description("Color of axes")]
 	public Color AxisColor { get; set; } = Color.Black;
@@ -65,6 +70,8 @@ internal abstract partial class GraphBase : Panel
 	[Browsable(false)]
 	public float? MaxValue { get; protected set; } = null;
 
+	protected bool DrawDuringDesign { get; set; } = true;
+
 	protected virtual Bitmap GenerateGraph()
 	{
 		Bitmap bmp = new(Width, Height);
@@ -73,14 +80,17 @@ internal abstract partial class GraphBase : Panel
 		{
 			DrawBackground(g);
 
-			DrawGraph(g);
-
-			if (DrawAxes)
+			if (DrawDuringDesign && DesignMode)
 			{
-				PointF axisPoint = DrawAxesOnGraph(g);
-				if (DrawLabels)
+				DrawGraph(g);
+
+				if (DrawAxes)
 				{
-					DrawGraphLabels(g, axisPoint);
+					PointF axisPoint = DrawAxesOnGraph(g);
+					if (DrawLabels)
+					{
+						DrawGraphLabels(g, axisPoint);
+					}
 				}
 			}
 		}
@@ -98,6 +108,9 @@ internal abstract partial class GraphBase : Panel
 
 	protected virtual PointF DrawAxesOnGraph(Graphics g)
 	{
+		if (MinValue is null || MaxValue is null)
+			throw new InvalidOperationException("MinValue & MaxValue must be set before calling this method");
+
 		Pen axisPen = new(AxisColor);
 
 		float xPixelDelta = Width / (EndX - StartX);

@@ -64,7 +64,7 @@
 			mutProb_entry = new TextBox();
 			crossProb_entry = new TextBox();
 			bottom_layout = new FlowLayoutPanel();
-			algGraph_PLACEHOLDER = new Panel();
+			statsGraph_graph = new StatsGraph();
 			left_layout = new FlowLayoutPanel();
 			function_title = new Label();
 			xRange_title = new Label();
@@ -107,19 +107,20 @@
 			// functionGraph_graph
 			// 
 			functionGraph_graph.AxisColor = Color.Black;
-			functionGraph_graph.AxisFontSize = 5;
 			functionGraph_graph.BackgroundColor = SystemColors.Control;
 			functionGraph_graph.BorderStyle = BorderStyle.FixedSingle;
 			functionGraph_graph.DeltaX = 0.1F;
 			functionGraph_graph.DrawAxes = true;
+			functionGraph_graph.DrawLabels = true;
 			functionGraph_graph.EndX = 26F;
 			functionGraph_graph.EquationString = "-0.4*x^2+2*x+10";
 			functionGraph_graph.GraphColor = Color.Red;
 			functionGraph_graph.LabelDensity = 10;
+			functionGraph_graph.LabelsFont = new Font("Microsoft Sans Serif", 5F);
 			functionGraph_graph.Location = new Point(3, 3);
 			functionGraph_graph.Name = "functionGraph_graph";
 			functionGraph_graph.Size = new Size(200, 200);
-			functionGraph_graph.StartX = -10F;
+			functionGraph_graph.StartX = -1F;
 			functionGraph_graph.TabIndex = 0;
 			functionGraph_graph.YOffset = 10F;
 			// 
@@ -543,7 +544,7 @@
 			// bottom_layout
 			// 
 			mainDivide_layout.SetColumnSpan(bottom_layout, 3);
-			bottom_layout.Controls.Add(algGraph_PLACEHOLDER);
+			bottom_layout.Controls.Add(statsGraph_graph);
 			bottom_layout.Dock = DockStyle.Fill;
 			bottom_layout.Location = new Point(10, 248);
 			bottom_layout.Margin = new Padding(0);
@@ -551,13 +552,26 @@
 			bottom_layout.Size = new Size(780, 238);
 			bottom_layout.TabIndex = 2;
 			// 
-			// algGraph_PLACEHOLDER
+			// statsGraph_graph
 			// 
-			algGraph_PLACEHOLDER.BackColor = SystemColors.ControlDark;
-			algGraph_PLACEHOLDER.Location = new Point(3, 3);
-			algGraph_PLACEHOLDER.Name = "algGraph_PLACEHOLDER";
-			algGraph_PLACEHOLDER.Size = new Size(774, 235);
-			algGraph_PLACEHOLDER.TabIndex = 1;
+			statsGraph_graph.AvgGraphColor = Color.Green;
+			statsGraph_graph.AxisColor = Color.Black;
+			statsGraph_graph.BackgroundColor = SystemColors.Control;
+			statsGraph_graph.BorderStyle = BorderStyle.FixedSingle;
+			statsGraph_graph.DeltaX = 0.2F;
+			statsGraph_graph.DrawAxes = true;
+			statsGraph_graph.DrawLabels = true;
+			statsGraph_graph.EndX = 26F;
+			statsGraph_graph.LabelDensity = 10;
+			statsGraph_graph.LabelsFont = new Font("Microsoft Sans Serif", 5F);
+			statsGraph_graph.Location = new Point(3, 3);
+			statsGraph_graph.MaxGraphColor = Color.Blue;
+			statsGraph_graph.MinGraphColor = Color.Orange;
+			statsGraph_graph.Name = "statsGraph_graph";
+			statsGraph_graph.Size = new Size(777, 235);
+			statsGraph_graph.StartX = -1F;
+			statsGraph_graph.TabIndex = 0;
+			statsGraph_graph.YOffset = 0F;
 			// 
 			// MainForm
 			// 
@@ -620,11 +634,11 @@
 		private Label max_displayLabel;
 		private Label iteration_displayLabel;
 		private Label iteration_title;
-		private Panel algGraph_PLACEHOLDER;
 		private Button functionOk_button;
 		private Label pkPercent_label;
 		private Label pmPercent_label;
 		private FunctionGraph functionGraph_graph;
 		private Button reset_button;
+		private StatsGraph statsGraph_graph;
 	}
 }

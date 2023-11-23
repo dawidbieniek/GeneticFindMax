@@ -6,6 +6,11 @@ internal partial class StatsGraph : GraphBase
 	private readonly List<float> _avg = [];
 	private readonly List<float> _max = [];
 
+	public StatsGraph() : base()
+	{
+		DrawDuringDesign = false;
+	}
+
 	public Color MinGraphColor { get; set; } = Color.Orange;
 	public Color AvgGraphColor { get; set; } = Color.Green;
 	public Color MaxGraphColor { get; set; } = Color.Blue;
