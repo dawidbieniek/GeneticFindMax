@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Text.RegularExpressions;
 
 using NCalc;
 
@@ -79,6 +78,11 @@ internal partial class FunctionGraph : Panel
 
 	public float YOffset { get; set; } = 0;
 
+	[Browsable(false)]
+	public float? MinValue { get; private set; }
+	[Browsable(false)]
+	public float? MaxValue { get; private set; }
+
 	protected override void OnPaint(PaintEventArgs e)
 	{
 		base.OnPaint(e);
@@ -128,6 +132,9 @@ internal partial class FunctionGraph : Panel
 				_expression!.Parameters["x"] = EndX;
 				values[^1] = Convert.ToSingle(_expression.Evaluate());
 
+				MinValue = values.Min();
+				MaxValue = values.Max();
+
 				// Draw graph
 				DrawGraph(g, values);
 
@@ -136,6 +143,11 @@ internal partial class FunctionGraph : Panel
 				{
 					DrawAxesOnGraph(g, values);
 				}
+			}
+			else
+			{
+				MinValue = null;
+				MaxValue = null;
 			}
 		}
 
@@ -146,19 +158,16 @@ internal partial class FunctionGraph : Panel
 	{
 		Pen graphPen = new(GraphColor);
 
-		float minVal = (float)values.Min();
-		float maxVal = (float)values.Max();
-
 		float xPixelDelta = (float)Width / values.Length;
-		float yPixelDelta = (float)(Height - YOffset) / (maxVal - minVal);
+		float yPixelDelta = (float)(Height - YOffset) / (MaxValue!.Value - MinValue!.Value);
 
 		float prevX = 0;
-		float prevY = -((values[0] - minVal) * yPixelDelta) + Height - YOffset;
+		float prevY = -((values[0] - MinValue!.Value) * yPixelDelta) + Height - YOffset;
 
 		for (int i = 1; i < values.Length; i++)
 		{
 			float xImage = i * xPixelDelta;
-			float yImage = -((values[i] - minVal) * yPixelDelta) + Height - YOffset;
+			float yImage = -((values[i] - MinValue!.Value) * yPixelDelta) + Height - YOffset;
 
 			g.DrawLine(graphPen, prevX, prevY, xImage, yImage);
 
@@ -171,22 +180,19 @@ internal partial class FunctionGraph : Panel
 	{
 		Pen axisPen = new(AxisColor);
 
-		float minY = (float)values.Min();
-		float maxY = (float)values.Max();
-
 		float yAxisPos;
 		float xAxisPos;
 
 		float xPixelDelta = Width / (EndX - StartX);
-		float yPixelDelta = (Height - YOffset) / (maxY - minY);
+		float yPixelDelta = (Height - YOffset) / (MaxValue!.Value - MinValue!.Value);
 
 		// Horizontal line
-		if (maxY < 0)       // Top line
+		if (MaxValue!.Value < 0)       // Top line
 			yAxisPos = 1;
-		else if (minY > 0)  // Bottom line
+		else if (MinValue!.Value > 0)  // Bottom line
 			yAxisPos = Height - YOffset;
 		else                // Middle line
-			yAxisPos = maxY * yPixelDelta;
+			yAxisPos = MaxValue!.Value * yPixelDelta;
 
 		g.DrawLine(axisPen, 0, yAxisPos, Width, yAxisPos);
 
@@ -200,7 +206,7 @@ internal partial class FunctionGraph : Panel
 
 		g.DrawLine(axisPen, xAxisPos, 0, xAxisPos, Height);
 
-		DrawLabels(g, axisPen, minY, maxY, yAxisPos, xAxisPos);
+		DrawLabels(g, axisPen, MinValue!.Value, MaxValue!.Value, yAxisPos, xAxisPos);
 	}
 
 	private void DrawLabels(Graphics g, Pen axisPen, float minY, float maxY, float yAxisPos, float xAxisPos)

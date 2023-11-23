@@ -109,6 +109,7 @@
 			functionGraph_graph.AxisColor = Color.Black;
 			functionGraph_graph.AxisFontSize = 5;
 			functionGraph_graph.BackgroundColor = SystemColors.Control;
+			functionGraph_graph.BorderStyle = BorderStyle.FixedSingle;
 			functionGraph_graph.DeltaX = 0.1F;
 			functionGraph_graph.DrawAxes = true;
 			functionGraph_graph.EndX = 26F;
@@ -568,6 +569,7 @@
 			Name = "MainForm";
 			ShowIcon = false;
 			Text = "Algorytmy ewolucyjne - max funkcji";
+			FormClosing += MainForm_FormClosing;
 			left_layout.ResumeLayout(false);
 			mainDivide_layout.ResumeLayout(false);
 			right_layout.ResumeLayout(false);

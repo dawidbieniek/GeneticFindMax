@@ -17,7 +17,7 @@ public partial class MainForm : Form
 	private bool _isThreadPaused;
 
 	private Thread? _gaThread;
-	private ManualResetEvent? _gaResetEvent;
+	private ManualResetEvent? _gaThreadPausedEvent;
 	private CancellationTokenSource? _gaCancelationToken;
 
 	public MainForm()
@@ -188,18 +188,12 @@ public partial class MainForm : Form
 	{
 		if (GaThread is null)
 		{
-			GeneticAlgorithm ga = new(Convert.ToSingle(crossProb_entry.Text),
-							 Convert.ToSingle(mutProb_entry.Text),
-							 Convert.ToInt32(population_entry.Text),
-							 function_entry.Text,
-							 Convert.ToInt32(xFrom_entry.Text),
-							 Convert.ToInt32(xTo_entry.Text));
+			GeneticAlgorithm ga = new(Convert.ToSingle(crossProb_entry.Text), Convert.ToSingle(mutProb_entry.Text), Convert.ToInt32(population_entry.Text), function_entry.Text, Convert.ToInt32(xFrom_entry.Text), Convert.ToInt32(xTo_entry.Text), functionGraph_graph.MinValue ?? 0);
 
-			_gaResetEvent = new(true);
+			_gaThreadPausedEvent = new(true);
 			IsThreadPaused = false;
 
 			_gaCancelationToken = new();
-
 			GaThread = new(new ThreadStart(delegate { PerformGeneticAlgorithm(ga); }));
 
 			GaThread.Start();
@@ -208,12 +202,12 @@ public partial class MainForm : Form
 		{
 			if (IsThreadPaused)
 			{
-				_gaResetEvent!.Set();
+				_gaThreadPausedEvent!.Set();
 				IsThreadPaused = false;
 			}
 			else
 			{
-				_gaResetEvent!.Reset();
+				_gaThreadPausedEvent!.Reset();
 				IsThreadPaused = true;
 			}
 		}
@@ -224,44 +218,53 @@ public partial class MainForm : Form
 	/// </summary>
 	private void PerformGeneticAlgorithm(GeneticAlgorithm ga)
 	{
+		// Repeat stepping algorithm forever (max 100000 times)
 		for (int i = 0; i < 100000; i++)
 		{
-			_gaResetEvent!.WaitOne();
+			// Stop here if is paused or reset
+			_gaThreadPausedEvent!.WaitOne();
 
+			// Aborting thread
 			if (_gaCancelationToken!.IsCancellationRequested)
 			{
-				Invoke((MethodInvoker)delegate
-					{
-						iteration_displayLabel.Text = "0";
-						min_displayLabel.Text = "0";
-						avg_displayLabel.Text = "0";
-						max_displayLabel.Text = "0";
-						IsThreadPaused = true;
-						GaThread = null;
-					});
-
+				if (!IsDisposed)
+				{
+					Invoke((MethodInvoker)delegate { SetLabels("0", "0", "0", "0"); });
+					Invoke((MethodInvoker)delegate { DestoryThread(); });
+				}
 				break;
 			}
 
+			// Execute algorithm
 			ga.Step();
 
 			GeneticAlgorithm.StatisticalValues stats = ga.CurrentStatisticalValues;
 
-			Invoke((MethodInvoker)delegate
-		{
-			iteration_displayLabel.Text = i.ToString();
-			min_displayLabel.Text = stats.Min.ToString("n2");
-			avg_displayLabel.Text = stats.Avg.ToString("n2");
-			max_displayLabel.Text = stats.Max.ToString("n2");
-		});
+			// Update labels
+			if (!IsDisposed)
+				Invoke((MethodInvoker)delegate { SetLabels(stats.Min.ToString("n2"), stats.Avg.ToString("n2"), stats.Max.ToString("n2"), i.ToString()); });
 		}
+	}
+
+	private void SetLabels(string minText, string avgText, string maxText, string iterationText)
+	{
+		iteration_displayLabel.Text = iterationText;
+		min_displayLabel.Text = minText;
+		avg_displayLabel.Text = avgText;
+		max_displayLabel.Text = maxText;
+	}
+
+	private void DestoryThread()
+	{
+		IsThreadPaused = true;
+		GaThread = null;
 	}
 
 	private void reset_button_Click(object sender, EventArgs e)
 	{
 		_gaCancelationToken!.Cancel();
 		if (IsThreadPaused)
-			_gaResetEvent!.Set();
+			_gaThreadPausedEvent!.Set();
 	}
 
 	private void function_entry_Leave(object sender, EventArgs e)
@@ -322,5 +325,11 @@ public partial class MainForm : Form
 			population_entry.ForeColor = SystemColors.WindowText;
 			WrongParameters = false;
 		}
+	}
+
+	private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+	{
+		_gaCancelationToken?.Cancel();
+		// TODO: safely close thread
 	}
 }
