@@ -16,6 +16,7 @@ public partial class MainForm : Form
 	private bool _wrongParameters;
 	private bool _isThreadPaused;
 
+	private bool _isClosing = false;
 	private Thread? _gaThread;
 	private ManualResetEvent? _gaThreadPausedEvent;
 	private CancellationTokenSource? _gaCancelationToken;
@@ -196,6 +197,7 @@ public partial class MainForm : Form
 
 			_gaCancelationToken = new();
 			GaThread = new(new ThreadStart(delegate { PerformGeneticAlgorithm(ga); }));
+			GaThread.Name = "GaThread";
 
 			GaThread.Start();
 		}
@@ -228,11 +230,11 @@ public partial class MainForm : Form
 			// Aborting thread
 			if (_gaCancelationToken!.IsCancellationRequested)
 			{
-				if (!IsDisposed)
+				if (!_isClosing)
 				{
-					Invoke((MethodInvoker)delegate { SetLabels("0", "0", "0", "0"); });
-					Invoke((MethodInvoker)delegate { DestoryThread(); });
-					Invoke((MethodInvoker)delegate { statsGraph_graph.Clear(); });
+					BeginInvoke((MethodInvoker)delegate { SetLabels("0", "0", "0", "0"); });
+					BeginInvoke((MethodInvoker)delegate { DestoryThread(); });
+					BeginInvoke((MethodInvoker)delegate { statsGraph_graph.Clear(); });
 				}
 				break;
 			}
@@ -243,11 +245,8 @@ public partial class MainForm : Form
 			GeneticAlgorithm.StatisticalValues stats = ga.CurrentStatisticalValues;
 
 			// Update labels
-			if (!IsDisposed)
-			{
-				Invoke((MethodInvoker)delegate { SetLabels(stats.Min.ToString("n2"), stats.Avg.ToString("n2"), stats.Max.ToString("n2"), i.ToString()); });
-				Invoke((MethodInvoker)delegate { statsGraph_graph.AddStats(stats.Min, stats.Avg, stats.Max); });
-			}
+			BeginInvoke((MethodInvoker)delegate { SetLabels(stats.Min.ToString("n2"), stats.Avg.ToString("n2"), stats.Max.ToString("n2"), i.ToString()); });
+			BeginInvoke((MethodInvoker)delegate { statsGraph_graph.AddStats(stats.Min, stats.Avg, stats.Max); });
 
 			Thread.Sleep(10);
 		}
@@ -272,7 +271,7 @@ public partial class MainForm : Form
 		_gaCancelationToken!.Cancel();
 		if (IsThreadPaused)
 			_gaThreadPausedEvent!.Set();
-		_gaThread = null;
+		GaThread = null;
 
 		LockParameterChange(false);
 	}
@@ -339,8 +338,9 @@ public partial class MainForm : Form
 
 	private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 	{
+		_isClosing = true;
 		_gaCancelationToken?.Cancel();
-		// TODO: safely close thread
+		GaThread?.Join();
 	}
 
 	private void left_layout_Paint(object sender, PaintEventArgs e)
