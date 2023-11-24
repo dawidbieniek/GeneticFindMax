@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel;
 
-using Antlr.Runtime.Tree;
-
-namespace AE1;
+namespace AE1.CustomControls;
 
 internal abstract partial class GraphBase : Panel
 {
@@ -163,10 +161,10 @@ internal abstract partial class GraphBase : Panel
 		for (int i = 0; i < LabelDensity; i++)
 		{
 			g.DrawLine(axisPen, i * xLabelPixelDelta, axisPoint.Y - 2, i * xLabelPixelDelta, axisPoint.Y + 2);
-			g.DrawString(MathF.Round((i * xLabelDelta) + StartX, 1).ToString(), LabelsFont, axisBrush, i * xLabelPixelDelta, axisPoint.Y - 7);
+			g.DrawString(MathF.Round(i * xLabelDelta + StartX, 1).ToString(), LabelsFont, axisBrush, i * xLabelPixelDelta, axisPoint.Y - 7);
 
 			g.DrawLine(axisPen, axisPoint.X - 2, i * yLabelPixelDelta, axisPoint.X + 2, i * yLabelPixelDelta);
-			g.DrawString(MathF.Round(MaxValue!.Value - (i * yLabelDelta), 1).ToString(), LabelsFont, axisBrush, axisPoint.X + 5, i * xLabelPixelDelta);
+			g.DrawString(MathF.Round(MaxValue!.Value - i * yLabelDelta, 1).ToString(), LabelsFont, axisBrush, axisPoint.X + 5, i * xLabelPixelDelta);
 		}
 	}
 

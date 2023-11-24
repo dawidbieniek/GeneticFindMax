@@ -1,4 +1,4 @@
-﻿namespace AE1;
+﻿namespace AE1.CustomControls;
 
 internal partial class StatsGraph : GraphBase
 {
@@ -93,14 +93,14 @@ internal partial class StatsGraph : GraphBase
 		SizeF measure = legend.Select((kv) => g.MeasureString(kv.Key, font)).Max(Comparer<SizeF>.Create((a, b) => a.Width.CompareTo(b.Width)));
 
 		float padding = 0.2f;
-		float colorPos = Width - (measure.Width * (1 + padding) * 2);
-		float textPos = Width - (measure.Width * (1 + padding));
+		float colorPos = Width - measure.Width * (1 + padding) * 2;
+		float textPos = Width - measure.Width * (1 + padding);
 
 		int i = 0;
 		foreach (KeyValuePair<string, SolidBrush> line in legend)
 		{
-			g.FillRectangle(line.Value, colorPos, (Height / 2) + ((1 + padding) * i * measure.Height), measure.Width, measure.Height);
-			g.DrawString(line.Key, font, fontBrush, textPos, (Height / 2) + ((1 + padding) * i * measure.Height));
+			g.FillRectangle(line.Value, colorPos, Height / 2 + (1 + padding) * i * measure.Height, measure.Width, measure.Height);
+			g.DrawString(line.Key, font, fontBrush, textPos, Height / 2 + (1 + padding) * i * measure.Height);
 			i++;
 		}
 	}

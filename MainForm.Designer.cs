@@ -1,6 +1,8 @@
-﻿namespace AE1
+﻿using AE1.CustomControls;
+
+namespace AE1
 {
-	partial class MainForm
+    partial class MainForm
 	{
 		/// <summary>
 		///  Required designer variable.
