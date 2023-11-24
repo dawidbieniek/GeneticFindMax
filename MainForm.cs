@@ -357,8 +357,9 @@ public partial class MainForm : Form
 	private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 	{
 		_isClosing = true;
+		_gaThreadPausedEvent?.Set();
 		_gaCancelationToken?.Cancel();
-		GaThread?.Join();
+		//GaThread?.Join();
 	}
 
 	private void left_layout_Paint(object sender, PaintEventArgs e)

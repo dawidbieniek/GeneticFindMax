@@ -55,14 +55,14 @@ internal partial class StatsGraph : GraphBase
 		using Pen avgPen = new(AvgGraphColor);
 		using Pen maxPen = new(MaxGraphColor);
 
-		//MinValue = _min.Min() - 5;
+		MinValue = _min.Min() - 5;
 		MinValue = -5;
 		MaxValue = _max.Max() + 5;
 
 		float xPixelDelta = 1;
 		float yPixelDelta = (float)(Height - YOffset) / (MaxValue!.Value - MinValue!.Value);
 
-		//DrawLine(g, _min, xPixelDelta, yPixelDelta, minPen);
+		DrawLine(g, _min, xPixelDelta, yPixelDelta, minPen);
 		DrawLine(g, _avg, xPixelDelta, yPixelDelta, avgPen);
 		DrawLine(g, _max, xPixelDelta, yPixelDelta, maxPen);
 	}
