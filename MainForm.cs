@@ -10,8 +10,8 @@ public partial class MainForm : Form
 	private readonly int _defaultStartX = -1;
 	private readonly int _defaultEndX = 26;
 	private readonly float _defaultPk = 80;
-	private readonly float _defaultPm = 1;
-	private readonly int _defaultPopulation = 10;   //TODO: Change to 100
+	private readonly float _defaultPm = 0.1f;
+	private readonly int _defaultPopulation = 100;
 	private bool _wrongFunction;
 	private bool _wrongParameters;
 	private bool _isThreadPaused;
@@ -192,6 +192,24 @@ public partial class MainForm : Form
 		{
 			GeneticAlgorithm ga = new(Convert.ToSingle(crossProb_entry.Text), Convert.ToSingle(mutProb_entry.Text), Convert.ToInt32(population_entry.Text), function_entry.Text, Convert.ToInt32(xFrom_entry.Text), Convert.ToInt32(xTo_entry.Text), functionGraph_graph.MinValue ?? 0);
 
+			//for (int i = 0; i < 1000; i++)
+			//{
+			//	ga.Step();
+			//}
+
+			//var s1 = ga.CurrentStatisticalValues;
+			//for (int i = 0; i < 10000; i++)
+			//{
+			//	ga.Step();
+			//}
+			//var s2 = ga.CurrentStatisticalValues;
+			//for (int i = 0; i < 100000; i++)
+			//{
+			//	ga.Step();
+			//}
+			//var s3 = ga.CurrentStatisticalValues;
+
+			//;
 			_gaThreadPausedEvent = new(true);
 			IsThreadPaused = false;
 

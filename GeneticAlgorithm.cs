@@ -83,7 +83,7 @@ internal class GeneticAlgorithm
 	{
 		_fitFunction.Parameters["x"] = Decode(i);
 		float v = Convert.ToSingle(_fitFunction.Evaluate());
-		return v * v;
+		return v;
 	});
 
 	/// <summary>
@@ -120,8 +120,8 @@ internal class GeneticAlgorithm
 				}
 			}
 
-			if (index == -1)        // Should never happen
-				throw new InvalidOperationException("Wheel generated value out of bounds");
+			if (index == -1)        // Sometimes cumulative probabilites can add to less than 1 (rounding error)
+				index = selected.Length - 1;
 
 			selected[i] = _population[index];
 		}
@@ -170,7 +170,7 @@ internal class GeneticAlgorithm
 	/// </summary>
 	private int[] DoMutation(int[] selected)
 	{
-		int[] mutated = (int[])_population.Clone();
+		int[] mutated = selected;
 
 		for (int i = 0; i < selected.Length; i++)
 		{
