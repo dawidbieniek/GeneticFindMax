@@ -1,6 +1,5 @@
 ﻿namespace AE1;
 
-// TODO: Add YOffset
 internal partial class StatsGraph : GraphBase
 {
 	private readonly List<float> _min = [];
@@ -32,6 +31,18 @@ internal partial class StatsGraph : GraphBase
 		_min.Add(min);
 		_avg.Add(avg);
 		_max.Add(max);
+
+		Invalidate();
+	}
+
+	public void Clear()
+	{
+		_min.Clear();
+		_avg.Clear();
+		_max.Clear();
+
+		StartX = 0;
+		EndX = Width;
 
 		Invalidate();
 	}

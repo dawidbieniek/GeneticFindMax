@@ -2,7 +2,6 @@
 
 namespace AE1;
 
-// TODO: Change names of parameters
 internal class GeneticAlgorithm
 {
 	private static readonly Random Rnd = new();
@@ -83,7 +82,8 @@ internal class GeneticAlgorithm
 	private IEnumerable<float> EvaluateFitness() => _population.Select(i =>
 	{
 		_fitFunction.Parameters["x"] = Decode(i);
-		return Convert.ToSingle(_fitFunction.Evaluate());
+		float v = Convert.ToSingle(_fitFunction.Evaluate());
+		return v * v;
 	});
 
 	/// <summary>

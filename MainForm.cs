@@ -186,6 +186,7 @@ public partial class MainForm : Form
 
 	private void start_button_Click(object sender, EventArgs e)
 	{
+		LockParameterChange(true);
 		if (GaThread is null)
 		{
 			GeneticAlgorithm ga = new(Convert.ToSingle(crossProb_entry.Text), Convert.ToSingle(mutProb_entry.Text), Convert.ToInt32(population_entry.Text), function_entry.Text, Convert.ToInt32(xFrom_entry.Text), Convert.ToInt32(xTo_entry.Text), functionGraph_graph.MinValue ?? 0);
@@ -231,6 +232,7 @@ public partial class MainForm : Form
 				{
 					Invoke((MethodInvoker)delegate { SetLabels("0", "0", "0", "0"); });
 					Invoke((MethodInvoker)delegate { DestoryThread(); });
+					Invoke((MethodInvoker)delegate { statsGraph_graph.Clear(); });
 				}
 				break;
 			}
@@ -270,6 +272,9 @@ public partial class MainForm : Form
 		_gaCancelationToken!.Cancel();
 		if (IsThreadPaused)
 			_gaThreadPausedEvent!.Set();
+		_gaThread = null;
+
+		LockParameterChange(false);
 	}
 
 	private void function_entry_Leave(object sender, EventArgs e)
@@ -340,5 +345,18 @@ public partial class MainForm : Form
 
 	private void left_layout_Paint(object sender, PaintEventArgs e)
 	{
+	}
+
+	private void LockParameterChange(bool disabled)
+	{
+		crossProb_entry.Enabled = !disabled;
+		mutProb_entry.Enabled = !disabled;
+		population_entry.Enabled = !disabled;
+
+		function_entry.Enabled = !disabled;
+		xFrom_entry.Enabled = !disabled;
+		xTo_entry.Enabled = !disabled;
+
+		functionOk_button.Enabled = !disabled;
 	}
 }

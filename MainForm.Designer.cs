@@ -572,7 +572,7 @@
 			statsGraph_graph.Size = new Size(777, 235);
 			statsGraph_graph.StartX = 0F;
 			statsGraph_graph.TabIndex = 0;
-			statsGraph_graph.YOffset = 0F;
+			statsGraph_graph.YOffset = 10F;
 			// 
 			// MainForm
 			// 
